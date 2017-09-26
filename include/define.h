@@ -1,4 +1,4 @@
-#ifndef _CHEPDF_DEFINE_
+﻿#ifndef _CHEPDF_DEFINE_
 #define _CHEPDF_DEFINE_
 
 #include <stdint.h>
