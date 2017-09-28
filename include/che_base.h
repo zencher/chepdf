@@ -1,7 +1,7 @@
-﻿#ifndef _CHEPDF_BASE_H_
+#ifndef _CHEPDF_BASE_H_
 #define _CHEPDF_BASE_H_
 
-#include "define.h"
+#include "che_define.h"
 
 #include <new>
 #include <cstdlib>

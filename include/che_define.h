@@ -1,10 +1,10 @@
-﻿#ifndef _CHEPDF_DEFINE_
+#ifndef _CHEPDF_DEFINE_
 #define _CHEPDF_DEFINE_
 
 #include <stdint.h>
 
 typedef uint8_t			BYTE;
-typedef uint8_t *		LPBYTE;
+typedef uint8_t *		PBYTE;
 typedef uint8_t const *	PCBYTE;
 typedef int16_t			INT16;
 typedef uint16_t		UINT16;
