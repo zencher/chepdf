@@ -7,16 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9030B0F420BDB175005463AF /* che_define.h in Headers */ = {isa = PBXBuildFile; fileRef = 9030B0F220BDB175005463AF /* che_define.h */; };
-		9030B0F520BDB175005463AF /* che_base.h in Headers */ = {isa = PBXBuildFile; fileRef = 9030B0F320BDB175005463AF /* che_base.h */; };
-		9030B0F920BDB27F005463AF /* che_base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9030B0F820BDB27F005463AF /* che_base.cpp */; };
+		9030B0F420BDB175005463AF /* che_base_define.h in Headers */ = {isa = PBXBuildFile; fileRef = 9030B0F220BDB175005463AF /* che_base_define.h */; };
+		9030B0F520BDB175005463AF /* che_base_object.h in Headers */ = {isa = PBXBuildFile; fileRef = 9030B0F320BDB175005463AF /* che_base_object.h */; };
+		9030B10320BDB27F005463AF /* che_base_object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9030B10220BDB27F005463AF /* che_base_object.cpp */; };
+		9030B10520BDB27F005463AF /* che_base_string.h in Headers */ = {isa = PBXBuildFile; fileRef = 9030B10420BDB27F005463AF /* che_base_string.h */; };
+		9030B10720BDB27F005463AF /* che_base_string.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9030B10620BDB27F005463AF /* che_base_string.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9030B0E720BDAFA0005463AF /* libchepdf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libchepdf.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		9030B0F220BDB175005463AF /* che_define.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = che_define.h; path = ../../../../include/che_define.h; sourceTree = "<group>"; };
-		9030B0F320BDB175005463AF /* che_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = che_base.h; path = ../../../../include/che_base.h; sourceTree = "<group>"; };
-		9030B0F820BDB27F005463AF /* che_base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = che_base.cpp; path = ../../../source/che_base.cpp; sourceTree = "<group>"; };
+		9030B0F220BDB175005463AF /* che_base_define.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = che_base_define.h; path = ../../../../include/che_base_define.h; sourceTree = "<group>"; };
+		9030B0F320BDB175005463AF /* che_base_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = che_base_object.h; path = ../../../../include/che_base_object.h; sourceTree = "<group>"; };
+		9030B10220BDB27F005463AF /* che_base_object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = che_base_object.cpp; path = ../../../source/che_base_object.cpp; sourceTree = "<group>"; };
+		9030B10420BDB27F005463AF /* che_base_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = che_base_string.h; path = ../../../../include/che_base_string.h; sourceTree = "<group>"; };
+		9030B10620BDB27F005463AF /* che_base_string.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = che_base_string.cpp; path = ../../../source/che_base_string.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,8 +54,9 @@
 		9030B0F020BDB146005463AF /* include */ = {
 			isa = PBXGroup;
 			children = (
-				9030B0F320BDB175005463AF /* che_base.h */,
-				9030B0F220BDB175005463AF /* che_define.h */,
+				9030B0F220BDB175005463AF /* che_base_define.h */,
+				9030B0F320BDB175005463AF /* che_base_object.h */,
+				9030B10420BDB27F005463AF /* che_base_string.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -59,7 +64,8 @@
 		9030B0F120BDB14C005463AF /* source */ = {
 			isa = PBXGroup;
 			children = (
-				9030B0F820BDB27F005463AF /* che_base.cpp */,
+				9030B10620BDB27F005463AF /* che_base_string.cpp */,
+				9030B10220BDB27F005463AF /* che_base_object.cpp */,
 			);
 			name = source;
 			sourceTree = "<group>";
@@ -71,8 +77,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9030B0F420BDB175005463AF /* che_define.h in Headers */,
-				9030B0F520BDB175005463AF /* che_base.h in Headers */,
+				9030B0F420BDB175005463AF /* che_base_define.h in Headers */,
+				9030B10520BDB27F005463AF /* che_base_string.h in Headers */,
+				9030B0F520BDB175005463AF /* che_base_object.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,7 +139,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9030B0F920BDB27F005463AF /* che_base.cpp in Sources */,
+				9030B10720BDB27F005463AF /* che_base_string.cpp in Sources */,
+				9030B10320BDB27F005463AF /* che_base_object.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
