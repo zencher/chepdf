@@ -1,5 +1,5 @@
-#ifndef _CHEPDF_DEFINE_
-#define _CHEPDF_DEFINE_
+#ifndef _CHE_BASE_DEFINE_
+#define _CHE_BASE_DEFINE_
 
 #include <stdint.h>
 

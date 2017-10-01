@@ -1,10 +1,8 @@
-#ifndef _CHEPDF_BASE_H_
-#define _CHEPDF_BASE_H_
+#ifndef _CHE_BASE_OBJECT_H_
+#define _CHE_BASE_OBJECT_H_
 
-#include "che_define.h"
-
-#include <new>
 #include <cstdlib>
+#include <new>
 
 #ifdef _MAC_OS_X_
 #include <malloc/malloc.h>
@@ -17,6 +15,8 @@
 #include <windows.h>
 #undef GetObject
 #endif
+
+#include "che_base_define.h"
 
 #if _MSC_VER>=1800
 #define CPP_VARIADIC_TEMPLATE
@@ -155,16 +155,15 @@ namespace chepdf
 #endif
 	};
 
-
 	class BaseObject
 	{
 	public:
 		BaseObject(Allocator * pAllocator);
 
-		Allocator * GetAllocator() const { return pAllocator_; }
+		Allocator * GetAllocator() const { return allocator_; }
 
 	private:
-		Allocator * pAllocator_;
+		Allocator * allocator_;
 	};
 
 
@@ -222,8 +221,8 @@ namespace chepdf
 
 		inline operator size_t() { return referenceCount_; }
 
-		inline void	AddRef();
-		inline void DecRef();
+		inline void	Increase();
+		inline void Decrease();
 
 	private:
 #ifdef _MAC_OS_X_
@@ -243,6 +242,7 @@ namespace chepdf
 		void Lock();
 		void UnLock();
 
+    private:
 #ifdef WIN32
 		HANDLE	mutex_;
 #endif
