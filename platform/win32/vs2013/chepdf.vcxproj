@@ -11,11 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\che_base.h" />
-    <ClInclude Include="..\..\..\include\che_define.h" />
+    <ClInclude Include="..\..\..\include\che_base_define.h" />
+    <ClInclude Include="..\..\..\include\che_base_object.h" />
+    <ClInclude Include="..\..\..\include\che_base_string.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\source\che_base.cpp" />
+    <ClCompile Include="..\..\..\source\che_base_object.cpp" />
+    <ClCompile Include="..\..\..\source\che_base_string.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3FD749A1-0F9D-48C1-B7E7-39DDBE417E65}</ProjectGuid>

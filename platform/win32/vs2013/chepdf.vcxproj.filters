@@ -15,15 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\base.h">
+    <ClInclude Include="..\..\..\include\che_base_define.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\define.h">
+    <ClInclude Include="..\..\..\include\che_base_object.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\che_base_string.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\source\base.cpp">
+    <ClCompile Include="..\..\..\source\che_base_object.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\che_base_string.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
