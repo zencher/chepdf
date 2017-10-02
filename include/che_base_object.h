@@ -158,7 +158,7 @@ namespace chepdf
 	class BaseObject
 	{
 	public:
-		BaseObject(Allocator * pAllocator);
+		BaseObject(Allocator * allocator);
 
 		Allocator * GetAllocator() const { return allocator_; }
 
@@ -175,10 +175,10 @@ namespace chepdf
 			FILEWRITE_MODE_OPEN
 		};
 
-		static IWrite * CreateCrtFileIWrite(char * const filename, FILEWRITE_MODE mode, Allocator * pAllocator);
+		static IWrite * CreateCrtFileIWrite(char * const filename, FILEWRITE_MODE mode, Allocator * allocator);
 		static void DestroyIWrite(IWrite * pIWrite);
 
-		IWrite(Allocator * pAllocator) : BaseObject(pAllocator) {};
+		IWrite(Allocator * allocator) : BaseObject(allocator) {};
 		virtual ~IWrite() {};
 
 		virtual size_t GetSize() = 0;
@@ -201,11 +201,11 @@ namespace chepdf
 			FILEREAD_MODE_COPYTOMEMORY
 		};
 
-		static IRead * CreateCrtFileIRead(char const * filename, FILEREAD_MODE mode, Allocator * pAllocator);
-		static IRead * CreateMemoryIRead(PCBYTE pMemory, size_t size, Allocator * pAllocator);
+		static IRead * CreateCrtFileIRead(char const * filename, FILEREAD_MODE mode, Allocator * allocator);
+		static IRead * CreateMemoryIRead(PCBYTE pMemory, size_t size, Allocator * allocator);
 		static void DestroyIRead(IRead * pIRead);
 
-		IRead(Allocator * pAllocator) : BaseObject(pAllocator) {}
+		IRead(Allocator * allocator) : BaseObject(allocator) {}
 		virtual ~IRead() {};
 
 		virtual size_t GetSize() = 0;
@@ -221,8 +221,8 @@ namespace chepdf
 
 		inline operator size_t() { return referenceCount_; }
 
-		inline void	Increase();
-		inline void Decrease();
+		void Increase();
+		void Decrease();
 
 	private:
 #ifdef _MAC_OS_X_
