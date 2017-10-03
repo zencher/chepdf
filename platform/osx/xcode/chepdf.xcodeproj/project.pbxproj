@@ -16,10 +16,10 @@
 
 /* Begin PBXFileReference section */
 		9030B0E720BDAFA0005463AF /* libchepdf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libchepdf.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		9030B0F220BDB175005463AF /* che_base_define.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = che_base_define.h; path = ../../../../include/che_base_define.h; sourceTree = "<group>"; };
-		9030B0F320BDB175005463AF /* che_base_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = che_base_object.h; path = ../../../../include/che_base_object.h; sourceTree = "<group>"; };
+		9030B0F220BDB175005463AF /* che_base_define.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = che_base_define.h; sourceTree = "<group>"; };
+		9030B0F320BDB175005463AF /* che_base_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = che_base_object.h; sourceTree = "<group>"; };
 		9030B10220BDB27F005463AF /* che_base_object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = che_base_object.cpp; path = ../../../source/che_base_object.cpp; sourceTree = "<group>"; };
-		9030B10420BDB27F005463AF /* che_base_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = che_base_string.h; path = ../../../../include/che_base_string.h; sourceTree = "<group>"; };
+		9030B10420BDB27F005463AF /* che_base_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = che_base_string.h; sourceTree = "<group>"; };
 		9030B10620BDB27F005463AF /* che_base_string.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = che_base_string.cpp; path = ../../../source/che_base_string.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -58,7 +58,8 @@
 				9030B0F320BDB175005463AF /* che_base_object.h */,
 				9030B10420BDB27F005463AF /* che_base_string.h */,
 			);
-			path = include;
+			name = include;
+			path = ../../../include;
 			sourceTree = "<group>";
 		};
 		9030B0F120BDB14C005463AF /* source */ = {
