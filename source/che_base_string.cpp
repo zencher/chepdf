@@ -21,7 +21,7 @@ struct ByteStringData
 		length_ = 0;
 	}
 	char *          str_;
-	size_t          length_;
+	uint32_t        length_;
 	ReferenceCount  reference_;
 };
 
@@ -42,7 +42,7 @@ ByteString::ByteString(char ch, Allocator * allocator)
 	}
 }
 
-ByteString::ByteString(char const * pstr, size_t length /* = 0 */, Allocator * allocator /*= nullptr*/)
+ByteString::ByteString(char const * pstr, uint32_t length /* = 0 */, Allocator * allocator /*= nullptr*/)
 	:BaseObject(allocator)
 {
 	if (pstr == nullptr)
@@ -52,7 +52,7 @@ ByteString::ByteString(char const * pstr, size_t length /* = 0 */, Allocator * a
 	}
 	if (length == 0)
 	{
-		length = strlen(pstr);
+		length = (uint32_t)strlen(pstr);
 	}
 	if (length > 0)
 	{
@@ -121,7 +121,7 @@ ByteString & ByteString::operator=(char const * pstr)
 		return *this;
 	}
 
-	size_t length = strlen(pstr);
+	uint32_t length = (uint32_t)strlen(pstr);
 	if (length == 0)
 	{
 		return *this;
@@ -247,7 +247,7 @@ bool ByteString::operator==(const ByteString & str) const
 	}
 }
 
-bool ByteString::SetData(BYTE * pData, size_t length)
+bool ByteString::SetData(uint8_t * pData, uint32_t length)
 {
 	if (pData == nullptr || length == 0)
 	{
@@ -294,7 +294,7 @@ char const * ByteString::GetData() const
 	return data_ ? data_->str_ : nullptr;
 }
 
-size_t ByteString::GetLength() const
+uint32_t ByteString::GetLength() const
 {
 	if (data_ == nullptr)
 	{
@@ -305,7 +305,7 @@ size_t ByteString::GetLength() const
 	}
 }
 
-char ByteString::operator[](size_t index) const
+char ByteString::operator[](uint32_t index) const
 {
 	if (data_ != nullptr)
 	{
@@ -343,7 +343,7 @@ ByteString ByteString::operator+(char ch)
 		return ByteString(ch, GetAllocator());
 	}
 
-	size_t length = data_->length_ + 2;
+	uint32_t length = data_->length_ + 2;
 	char * pstr = GetAllocator()->NewArray<char>(length);
 
 	strcpy(pstr, data_->str_);
@@ -365,16 +365,16 @@ ByteString ByteString::operator+(char const * pstr)
 
 	if (data_ == nullptr || data_->str_ == nullptr)
 	{
-		return ByteString(pstr, strlen(pstr), GetAllocator());
+		return ByteString(pstr, (uint32_t)strlen(pstr), GetAllocator());
 	}
 
-	size_t length = data_->length_ + strlen(pstr) + 1;
+	uint32_t length = data_->length_ + (uint32_t)strlen(pstr) + 1;
 	char * pTstr_ = GetAllocator()->NewArray<char>(length);
 
 	strcpy(pTstr_, data_->str_);
 	strcat(pTstr_, pstr);
 
-	ByteString str(pTstr_, strlen(pTstr_), GetAllocator());
+	ByteString str(pTstr_, (uint32_t)strlen(pTstr_), GetAllocator());
 	GetAllocator()->DeleteArray<char>(pTstr_);
 	return str;
 }
@@ -447,7 +447,7 @@ ByteString & ByteString::operator+=(char ch)
 			data_->str_ = nullptr;
 		}
 
-		size_t length = strlen(pTstr_) + 2;
+		uint32_t length = (uint32_t)strlen(pTstr_) + 2;
 		data_->str_ = GetAllocator()->NewArray<char>(length);
 		strcpy(data_->str_, pTstr_);
 		data_->str_[length - 2] = ch;
@@ -473,7 +473,7 @@ ByteString & ByteString::operator+=(char const * pstr)
 
 	if (data_ == nullptr)
 	{
-		size_t length = strlen(pstr);
+		uint32_t length = (uint32_t)strlen(pstr);
 		data_ = GetAllocator()->New<ByteStringData>();
 		data_->reference_.Increase();
 		data_->str_ = GetAllocator()->NewArray<char>(length + 1);
@@ -483,7 +483,7 @@ ByteString & ByteString::operator+=(char const * pstr)
 	else{
 		if (data_->str_ == nullptr)
 		{
-			size_t length = strlen(pstr);
+			uint32_t length = (uint32_t)strlen(pstr);
 			data_->str_ = GetAllocator()->NewArray<char>(length + 1);
 			strcpy(data_->str_, pstr);
 			data_->length_ = length;
@@ -511,7 +511,7 @@ ByteString & ByteString::operator+=(char const * pstr)
 			data_->str_ = nullptr;
 		}
 
-		size_t length = strlen(pTstr_) + strlen(pstr);
+		uint32_t length = (uint32_t)strlen(pTstr_) + (uint32_t)strlen(pstr);
 		data_->str_ = GetAllocator()->NewArray<char>(length + 1);
 		strcpy(data_->str_, pTstr_);
 		strcat(data_->str_, pstr);
@@ -551,7 +551,7 @@ ByteString & ByteString::operator+=(const ByteString & str)
 			data_->str_ = nullptr;
 		}
 
-		size_t length = strlen(pTstr_) * 2 + 1;
+		uint32_t length = (uint32_t)strlen(pTstr_) * 2 + 1;
 		data_->str_ = GetAllocator()->NewArray<char>(length);
 		strcpy(data_->str_, pTstr_);
 		strcat(data_->str_, pTstr_);
@@ -590,7 +590,7 @@ ByteString & ByteString::operator+=(const ByteString & str)
 				data_->length_ = 0;
 			}
 
-			size_t length = strlen(pTstr_) * 2 + 1;
+			uint32_t length = (uint32_t)strlen(pTstr_) * 2 + 1;
 			data_->str_ = GetAllocator()->NewArray<char>(length);
 			strcpy(data_->str_, pTstr_);
 			strcat(data_->str_, pTstr_);
@@ -631,7 +631,7 @@ ByteString & ByteString::operator+=(const ByteString & str)
 				data_->str_ = nullptr;
 			}
 
-			size_t length = strlen(str.data_->str_);
+			uint32_t length = (uint32_t)strlen(str.data_->str_);
 			length += strlen(pTstr_) + 1;
 			data_->str_ = GetAllocator()->NewArray<char>(length);
 			strcpy(data_->str_, pTstr_);
@@ -759,7 +759,7 @@ ByteString operator+(char ch, const ByteString & str)
 
 ByteString operator+(char const * pstr, const ByteString & str)
 {
-	ByteString testr_(pstr, strlen(pstr), str.GetAllocator());
+	ByteString testr_(pstr, (uint32_t)strlen(pstr), str.GetAllocator());
 	testr_ += str;
 	return testr_;
 }
@@ -784,7 +784,7 @@ struct WideStringData
 		length_ = 0;
 	}
 	wchar_t *       str_;
-	size_t          length_;
+	uint32_t        length_;
 	ReferenceCount  reference_;
 };
 
@@ -805,7 +805,7 @@ WideString::WideString(wchar_t wch, Allocator * allocator)
 	}
 }
 
-WideString::WideString(wchar_t const * pstr, size_t length /* = 0 */, Allocator * allocator)
+WideString::WideString(wchar_t const * pstr, uint32_t length /* = 0 */, Allocator * allocator)
 	: BaseObject(allocator)
 {
 	if (pstr == nullptr)
@@ -815,7 +815,7 @@ WideString::WideString(wchar_t const * pstr, size_t length /* = 0 */, Allocator 
 	}
 	if (length == 0)
 	{
-		length = wcslen(pstr);
+		length = (uint32_t)wcslen(pstr);
 	}
 	if (length > 0)
 	{
@@ -887,7 +887,7 @@ WideString& WideString::operator=(wchar_t const * pstr)
 		return *this;
 	}
 
-	size_t length = wcslen(pstr);
+	uint32_t length = (uint32_t)wcslen(pstr);
 	if (length == 0)
 	{
 		return *this;
@@ -1017,7 +1017,7 @@ bool WideString::operator==(const WideString & str)const
 	}
 }
 
-bool WideString::SetData(wchar_t * pData, size_t length)
+bool WideString::SetData(wchar_t * pData, uint32_t length)
 {
 	if (pData == nullptr || length == 0)
 	{
@@ -1064,7 +1064,7 @@ wchar_t const * WideString::GetData() const
 	return (data_) ? data_->str_ : nullptr;
 }
 
-size_t WideString::GetLength() const
+uint32_t WideString::GetLength() const
 {
 	if (data_ == nullptr)
 	{
@@ -1075,7 +1075,7 @@ size_t WideString::GetLength() const
 	}
 }
 
-wchar_t WideString::operator[](size_t index) const
+wchar_t WideString::operator[](uint32_t index) const
 {
 	if (data_ != nullptr)
 	{
@@ -1269,7 +1269,7 @@ WideString WideString::operator+(wchar_t const * pstr)
 		return WideString(pstr);
 	}
 
-	size_t length = data_->length_ + wcslen(pstr);
+	uint32_t length = data_->length_ + (uint32_t)wcslen(pstr);
 	wchar_t  * pTestr_ = GetAllocator()->NewArray<wchar_t >(length + 1);
 	wcscpy(pTestr_, data_->str_);
 	wcscat(pTestr_, pstr);
@@ -1292,7 +1292,7 @@ WideString WideString::operator+(const WideString & str)
 		return WideString(str);
 	}
 
-	size_t length = data_->length_ + str.data_->length_;
+	uint32_t length = data_->length_ + str.data_->length_;
 	wchar_t  * pTestr_ = GetAllocator()->NewArray<wchar_t >(length + 1);
 
 	wcscpy(pTestr_, data_->str_);
@@ -1352,7 +1352,7 @@ WideString & WideString::operator+=(wchar_t wch)
 			data_->str_ = nullptr;
 		}
 
-		size_t dwBufferSize = wcslen(pTestr_) + 2;
+		uint32_t dwBufferSize = (uint32_t)wcslen(pTestr_) + 2;
 		data_->str_ = GetAllocator()->NewArray<wchar_t >(dwBufferSize);
 		wcscpy(data_->str_, pTestr_);
 		data_->str_[dwBufferSize - 2] = wch;
@@ -1378,7 +1378,7 @@ WideString & WideString::operator+=(wchar_t const * pstr)
 
 	if (data_ == nullptr)
 	{
-		size_t length = wcslen(pstr);
+		uint32_t length = (uint32_t)wcslen(pstr);
 		data_ = GetAllocator()->New<WideStringData>();
 		data_->reference_.Increase();
 		data_->str_ = GetAllocator()->NewArray<wchar_t >(length + 1);
@@ -1388,7 +1388,7 @@ WideString & WideString::operator+=(wchar_t const * pstr)
 	else{
 		if (data_->str_ == nullptr)
 		{
-			size_t length = wcslen(pstr);
+			uint32_t length = (uint32_t)wcslen(pstr);
 			data_->str_ = GetAllocator()->NewArray<wchar_t >(length + 1);
 			wcscpy(data_->str_, pstr);
 			data_->length_ = length;
@@ -1417,7 +1417,7 @@ WideString & WideString::operator+=(wchar_t const * pstr)
 			data_->str_ = nullptr;
 		}
 
-		size_t length = wcslen(pTestr_) + wcslen(pstr);
+		uint32_t length = (uint32_t)wcslen(pTestr_) + (uint32_t)wcslen(pstr);
 		data_->str_ = GetAllocator()->NewArray<wchar_t >(length + 1);
 		wcscpy(data_->str_, pTestr_);
 		wcscat(data_->str_, pstr);
@@ -1457,7 +1457,7 @@ WideString & WideString::operator+=(const WideString & str)
 			data_->str_ = nullptr;
 		}
 
-		size_t length = wcslen(pTestr_) * 2;
+		uint32_t length = (uint32_t)wcslen(pTestr_) * 2;
 		data_->str_ = GetAllocator()->NewArray<wchar_t >(length + 1);
 		wcscpy(data_->str_, pTestr_);
 		wcscat(data_->str_, pTestr_);
@@ -1496,7 +1496,7 @@ WideString & WideString::operator+=(const WideString & str)
 				data_->length_ = 0;
 			}
 
-			size_t length = wcslen(pTestr_) * 2;
+			uint32_t length = (uint32_t)wcslen(pTestr_) * 2;
 			data_->str_ = GetAllocator()->NewArray<wchar_t >(length + 1);
 			wcscpy(data_->str_, pTestr_);
 			wcscat(data_->str_, pTestr_);
@@ -1537,7 +1537,7 @@ WideString & WideString::operator+=(const WideString & str)
 				data_->str_ = nullptr;
 			}
 
-			size_t length = wcslen(str.data_->str_);
+			uint32_t length = (uint32_t)wcslen(str.data_->str_);
 			length += wcslen(pTestr_);
 			data_->str_ = GetAllocator()->NewArray<wchar_t >(length + 1);
 			wcscpy(data_->str_, pTestr_);
@@ -1665,7 +1665,7 @@ WideString operator+(wchar_t wch, const WideString & str)
 
 WideString operator+(wchar_t const * pstr, const WideString & str)
 {
-	WideString testr_(pstr, wcslen(pstr), str.GetAllocator());
+	WideString testr_(pstr, (uint32_t)wcslen(pstr), str.GetAllocator());
 	testr_ += str;
 	return testr_;
 }
