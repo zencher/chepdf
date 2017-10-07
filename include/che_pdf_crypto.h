@@ -37,7 +37,7 @@ public:
 
 	bool Authenticate(const ByteString & password);
 
-	bool IsPasswordOK() { return m_bPasswordOk; }
+	bool IsPasswordOK() { return b_password_ok_; }
 
 	uint32_t Encrypt(ByteString & str, uint32_t objNum, uint32_t genNum);
 	uint32_t Encrypt(uint8_t * pData, uint32_t length, uint32_t objNum, uint32_t genNum);
@@ -60,17 +60,17 @@ private:
 	uint32_t AESDecrypt(uint8_t * key, uint32_t keyLength, uint8_t * data, uint32_t dataLength, uint8_t * dataRet);
 
 private:
-    bool            m_bPasswordOk;
-	bool            m_bMetaData;
-	uint8_t         m_algorithm;
-	uint8_t         m_version;
-	uint8_t         m_revision;
-	uint8_t         m_keyLength;
-	uint32_t        m_PValue;
-	uint8_t         m_OValue[32];
-	uint8_t         m_UValue[32];
-	uint8_t         m_EncryptionKey[16];
-    ByteString      m_ID;
+    bool            b_password_ok_;
+	bool            b_meta_data_;
+	uint8_t         algorithm_;
+	uint8_t         version_;
+	uint8_t         revision_;
+	uint8_t         key_length_;
+	uint32_t        p_;
+	uint8_t         o_[32];
+	uint8_t         u_[32];
+	uint8_t         encryption_key_[16];
+    ByteString      id_;
 };
     
 }//namespace

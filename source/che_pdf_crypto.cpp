@@ -14,34 +14,34 @@ static uint8_t padding[] = "\x28\xBF\x4E\x5E\x4E\x75\x8A\x41\x64\x00\x4E\x56\xFF
 
 PdfCrypto::PdfCrypto(const ByteString id, uint8_t O[32], uint8_t U[32], uint8_t algorithm,
 	uint8_t version, uint8_t revision, uint8_t keyLength, bool bMetaData, uint32_t P,
-	Allocator * allocator) : BaseObject(allocator), m_ID(allocator)
+	Allocator * allocator) : BaseObject(allocator), id_(allocator)
 {
-	m_ID = id;
+	id_ = id;
 	for (uint32_t i = 0; i < 32; i++)
 	{
-		m_OValue[i] = O[i];
-		m_UValue[i] = U[i];
+		o_[i] = O[i];
+		u_[i] = U[i];
 	}
-	m_algorithm = algorithm;
-	m_version = version;
-	m_revision = revision;
-	m_keyLength = keyLength;
-	m_bMetaData = bMetaData;
-	m_PValue = P;
-	m_bPasswordOk = false;
+	algorithm_ = algorithm;
+	version_ = version;
+	revision_ = revision;
+	key_length_ = keyLength;
+	b_meta_data_ = bMetaData;
+	p_ = P;
+	b_password_ok_ = false;
 }
 
 PdfCrypto::PdfCrypto(const ByteString id, uint8_t algorithm, uint8_t version, uint8_t revision, uint8_t keyLength,
-	bool bMetaData, uint32_t P, Allocator * allocator) : BaseObject(allocator), m_ID(allocator)
+	bool bMetaData, uint32_t P, Allocator * allocator) : BaseObject(allocator), id_(allocator)
 {
-	m_ID = id;
-	m_algorithm = algorithm;
-	m_version = version;
-	m_revision = revision;
-	m_keyLength = keyLength;
-	m_bMetaData = bMetaData;
-	m_PValue = P;
-	m_bPasswordOk = false;
+	id_ = id;
+	algorithm_ = algorithm;
+	version_ = version;
+	revision_ = revision;
+	key_length_ = keyLength;
+	b_meta_data_ = bMetaData;
+	p_ = P;
+	b_password_ok_ = false;
 }
 
 void PdfCrypto::Init(const ByteString userPassword, const ByteString ownerPassword)
@@ -53,14 +53,14 @@ void PdfCrypto::Init(const ByteString userPassword, const ByteString ownerPasswo
 	PadPassword(ownerPassword, ownerPad);
 	if (ownerPassword.GetLength() == 0)
 	{
-		ComputeOwnerKey(userPad, userPad, m_OValue, false);
+		ComputeOwnerKey(userPad, userPad, o_, false);
 	}
 	else{
-		ComputeOwnerKey(userPad, ownerPad, m_OValue, false);
+		ComputeOwnerKey(userPad, ownerPad, o_, false);
 	}
 	ComputeEncryptionKey(userPad, encryptionKey);
-	ComputeUserKey(encryptionKey, m_UValue);
-	m_bPasswordOk = TRUE;
+	ComputeUserKey(encryptionKey, u_);
+	b_password_ok_ = TRUE;
 }
 
 void PdfCrypto::PadPassword(const ByteString & password, unsigned char pswd[32])
@@ -84,14 +84,14 @@ void PdfCrypto::ComputeOwnerKey(uint8_t userPad[32], uint8_t ownerPad[32], uint8
 {
 	uint8_t mkey[16];
 	uint8_t digest[16];
-	uint32_t lengthInByte = m_keyLength / 8;
+	uint32_t lengthInByte = key_length_ / 8;
 
 	HashMD5 md5;
 	md5.Init();
 	md5.Update(ownerPad, 32);
 	md5.Final(digest);
 
-	if ((m_revision == 3) || (m_revision == 4))
+	if ((revision_ == 3) || (revision_ == 4))
 	{
 		for (uint32_t i = 0; i < 50; i++)
 		{
@@ -124,13 +124,13 @@ void PdfCrypto::ComputeOwnerKey(uint8_t userPad[32], uint8_t ownerPad[32], uint8
 
 void PdfCrypto::CreateObjKey(uint32_t objNum, uint32_t genNum, uint8_t objkey[16], uint32_t* pObjKeyLengthRet)
 {
-	uint32_t keyLengthInByte = m_keyLength / 8;
+	uint32_t keyLengthInByte = key_length_ / 8;
 	uint32_t objKeyLength = keyLengthInByte + 5;
 	uint8_t	tmpkey[16 + 5 + 4];
 
 	for (uint32_t j = 0; j < keyLengthInByte; j++)
 	{
-		tmpkey[j] = m_EncryptionKey[j];
+		tmpkey[j] = encryption_key_[j];
 	}
 	tmpkey[keyLengthInByte + 0] = (uint8_t)(0xff & objNum);
 	tmpkey[keyLengthInByte + 1] = (uint8_t)(0xff & (objNum >> 8));
@@ -138,7 +138,7 @@ void PdfCrypto::CreateObjKey(uint32_t objNum, uint32_t genNum, uint8_t objkey[16
 	tmpkey[keyLengthInByte + 3] = (uint8_t)(0xff & genNum);
 	tmpkey[keyLengthInByte + 4] = (uint8_t)(0xff & (genNum >> 8));
 
-	if (m_algorithm == CRYPTO_ALGORITHM_AESV2)
+	if (algorithm_ == CRYPTO_ALGORITHM_AESV2)
 	{
 		objKeyLength += 4;
 		tmpkey[keyLengthInByte + 5] = 0x73;
@@ -166,30 +166,30 @@ bool PdfCrypto::Authenticate(const ByteString & password)
 	ComputeEncryptionKey(padpswd, encrypt);
 	ComputeUserKey(encrypt, userKey);
 
-	uint32_t kmax = (m_revision == 2) ? 32 : 16;
+	uint32_t kmax = (revision_ == 2) ? 32 : 16;
 	for (uint32_t k = 0; bRet && k < kmax; k++)
 	{
-		bRet = bRet && (userKey[k] == m_UValue[k]);
+		bRet = bRet && (userKey[k] == u_[k]);
 	}
 	if (!bRet)
 	{
 		bRet = TRUE;
 		unsigned char userpswd[32];
-		ComputeOwnerKey(m_OValue, padpswd, userpswd, TRUE);
+		ComputeOwnerKey(o_, padpswd, userpswd, TRUE);
 		ComputeEncryptionKey(userpswd, encrypt);
 		ComputeUserKey(encrypt, userKey);
 		kmax = 32;
 		for (uint32_t k = 0; bRet && k < kmax; k++)
 		{
-			bRet = bRet && (userKey[k] == m_UValue[k]);
+			bRet = bRet && (userKey[k] == u_[k]);
 		}
 	}
 	if (bRet == TRUE)
 	{
-		m_bPasswordOk = TRUE;
+		b_password_ok_ = TRUE;
 		for (uint32_t i = 0; i < 16; i++)
 		{
-			m_EncryptionKey[i] = encrypt[i];
+			encryption_key_[i] = encrypt[i];
 		}
 	}
 	return bRet;
@@ -197,34 +197,34 @@ bool PdfCrypto::Authenticate(const ByteString & password)
 
 void PdfCrypto::ComputeEncryptionKey(uint8_t userPad[32], uint8_t encryptionKeyRet[16])
 {
-	uint32_t keyLengthInByte = m_keyLength / 8;
+	uint32_t keyLengthInByte = key_length_ / 8;
 
 	HashMD5 md5;
 	md5.Init();
 	md5.Update(userPad, 32);
-	md5.Update(m_OValue, 32);
+	md5.Update(o_, 32);
 
 	uint8_t ext[4];
-	ext[0] = (uint8_t)(m_PValue & 0xff);
-	ext[1] = (uint8_t)((m_PValue >> 8) & 0xff);
-	ext[2] = (uint8_t)((m_PValue >> 16) & 0xff);
-	ext[3] = (uint8_t)((m_PValue >> 24) & 0xff);
+	ext[0] = (uint8_t)(p_ & 0xff);
+	ext[1] = (uint8_t)((p_ >> 8) & 0xff);
+	ext[2] = (uint8_t)((p_ >> 16) & 0xff);
+	ext[3] = (uint8_t)((p_ >> 24) & 0xff);
 
 	md5.Update(ext, 4);
 
 	uint8_t * docId = nullptr;
-	if (m_ID.GetLength() > 0)
+	if (id_.GetLength() > 0)
 	{
-		docId = GetAllocator()->NewArray<uint8_t>(m_ID.GetLength());
+		docId = GetAllocator()->NewArray<uint8_t>(id_.GetLength());
 		uint32_t j;
-		for (j = 0; j < m_ID.GetLength(); j++)
+		for (j = 0; j < id_.GetLength(); j++)
 		{
-			docId[j] = static_cast<unsigned char>(m_ID[j]);
+			docId[j] = static_cast<unsigned char>(id_[j]);
 		}
-		md5.Update(docId, (uint32_t)m_ID.GetLength());
+		md5.Update(docId, (uint32_t)id_.GetLength());
 	}
 
-	if (m_bMetaData == false && m_revision >= 4)
+	if (b_meta_data_ == false && revision_ >= 4)
 	{
 		uint8_t ext[4];
 		ext[0] = 0xFF;
@@ -235,7 +235,7 @@ void PdfCrypto::ComputeEncryptionKey(uint8_t userPad[32], uint8_t encryptionKeyR
 	}
 	md5.Final(encryptionKeyRet);
 
-	if (m_revision >= 3)
+	if (revision_ >= 3)
 	{
 		for (uint32_t k = 0; k < 50; k++)
 		{
@@ -248,22 +248,22 @@ void PdfCrypto::ComputeEncryptionKey(uint8_t userPad[32], uint8_t encryptionKeyR
 
 void PdfCrypto::ComputeUserKey(uint8_t encryptionKey[16], uint8_t userKeyRet[32])
 {
-	uint32_t keyLengthInByte = m_keyLength / 8;
+	uint32_t keyLengthInByte = key_length_ / 8;
 
-	if (m_revision >= 3)
+	if (revision_ >= 3)
 	{
 		HashMD5 md5;
 		md5.Init();
 		md5.Update(padding, 32);
 
-		if (m_ID.GetLength() > 0)
+		if (id_.GetLength() > 0)
 		{
-			uint8_t * docId = GetAllocator()->NewArray<uint8_t>(m_ID.GetLength());
-			for (uint32_t j = 0; j < m_ID.GetLength(); j++)
+			uint8_t * docId = GetAllocator()->NewArray<uint8_t>(id_.GetLength());
+			for (uint32_t j = 0; j < id_.GetLength(); j++)
 			{
-				docId[j] = static_cast<unsigned char>(m_ID[j]);
+				docId[j] = static_cast<unsigned char>(id_[j]);
 			}
-			md5.Update(docId, (uint32_t)m_ID.GetLength());
+			md5.Update(docId, (uint32_t)id_.GetLength());
 			GetAllocator()->DeleteArray<uint8_t>(docId);
 		}
 
@@ -317,12 +317,12 @@ uint32_t PdfCrypto::Encrypt(ByteString & str, uint8_t objKey[16], uint32_t objKe
 	{
 		pData[i] = (uint8_t)(str[i]);
 	}
-	if (m_algorithm == CRYPTO_ALGORITHM_RC4)
+	if (algorithm_ == CRYPTO_ALGORITHM_RC4)
 	{
 		RC4(objKey, objKeyLen, pData, length, pData);
 		str.SetData(pData, length);
 	}
-	else if (m_algorithm == CRYPTO_ALGORITHM_AESV2)
+	else if (algorithm_ == CRYPTO_ALGORITHM_AESV2)
 	{
 		AESEncrypt(objKey, objKeyLen, pData, length, pData);
 		str.SetData(pData, length + 16);
@@ -337,11 +337,11 @@ uint32_t PdfCrypto::Encrypt(uint8_t * pData, uint32_t length, uint8_t objKey[16]
 	{
 		return 0;
 	}
-	if (m_algorithm == CRYPTO_ALGORITHM_RC4)
+	if (algorithm_ == CRYPTO_ALGORITHM_RC4)
 	{
 		RC4(objKey, objKeyLen, pData, length, pData);
 	}
-	else if (m_algorithm == CRYPTO_ALGORITHM_AESV2)
+	else if (algorithm_ == CRYPTO_ALGORITHM_AESV2)
 	{
 		length = AESEncrypt(objKey, objKeyLen, pData, length, pData);
 	}
@@ -372,12 +372,12 @@ uint32_t PdfCrypto::Decrypt(ByteString & str, uint8_t objKey[16], uint32_t objKe
 	{
 		pData[i] = (uint8_t)(str[i]);
 	}
-	if (m_algorithm == CRYPTO_ALGORITHM_RC4)
+	if (algorithm_ == CRYPTO_ALGORITHM_RC4)
 	{
 		RC4(objKey, objKeyLen, pData, length, pData);
 		str.SetData(pData, length);
 	}
-	else if (m_algorithm == CRYPTO_ALGORITHM_AESV2)
+	else if (algorithm_ == CRYPTO_ALGORITHM_AESV2)
 	{
 		length = AESDecrypt(objKey, objKeyLen, pData, length, pData);
 		if (length > 0)
@@ -395,11 +395,11 @@ uint32_t PdfCrypto::Decrypt(uint8_t * pData, uint32_t length, uint8_t objKey[16]
 	{
 		return 0;
 	}
-	if (m_algorithm == CRYPTO_ALGORITHM_RC4)
+	if (algorithm_ == CRYPTO_ALGORITHM_RC4)
 	{
 		RC4(objKey, objKeyLen, pData, length, pData);
 	}
-	else if (m_algorithm == CRYPTO_ALGORITHM_AESV2)
+	else if (algorithm_ == CRYPTO_ALGORITHM_AESV2)
 	{
 		length = AESDecrypt(objKey, objKeyLen, pData, length, pData);
 	}
