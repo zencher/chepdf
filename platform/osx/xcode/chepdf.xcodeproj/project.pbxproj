@@ -20,6 +20,8 @@
 		9030B11420C00F1F005463AF /* che_crypto_aes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9030B11220C00F1F005463AF /* che_crypto_aes.cpp */; };
 		9030B11520C00F1F005463AF /* che_crypto_rc4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9030B11320C00F1F005463AF /* che_crypto_rc4.cpp */; };
 		9030B11720C00FBE005463AF /* che_hash_md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9030B11620C00FBE005463AF /* che_hash_md5.cpp */; };
+		90EF232820C1508200D959C6 /* che_pdf_object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90EF232720C1508200D959C6 /* che_pdf_object.cpp */; };
+		90EF232A20C1509100D959C6 /* che_pdf_object.h in Headers */ = {isa = PBXBuildFile; fileRef = 90EF232920C1509100D959C6 /* che_pdf_object.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,8 @@
 		9030B11220C00F1F005463AF /* che_crypto_aes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = che_crypto_aes.cpp; path = ../../../source/che_crypto_aes.cpp; sourceTree = "<group>"; };
 		9030B11320C00F1F005463AF /* che_crypto_rc4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = che_crypto_rc4.cpp; path = ../../../source/che_crypto_rc4.cpp; sourceTree = "<group>"; };
 		9030B11620C00FBE005463AF /* che_hash_md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = che_hash_md5.cpp; path = ../../../source/che_hash_md5.cpp; sourceTree = "<group>"; };
+		90EF232720C1508200D959C6 /* che_pdf_object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = che_pdf_object.cpp; path = ../../../source/che_pdf_object.cpp; sourceTree = "<group>"; };
+		90EF232920C1509100D959C6 /* che_pdf_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = che_pdf_object.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +81,7 @@
 				9030B10C20C00EB9005463AF /* che_crypto_rc4.h */,
 				9030B10D20C00EBA005463AF /* che_hash_md5.h */,
 				9030B10820BDB27F005463AF /* che_pdf_crypto.h */,
+				90EF232920C1509100D959C6 /* che_pdf_object.h */,
 			);
 			name = include;
 			path = ../../../include;
@@ -91,6 +96,7 @@
 				9030B11320C00F1F005463AF /* che_crypto_rc4.cpp */,
 				9030B11620C00FBE005463AF /* che_hash_md5.cpp */,
 				9030B10A20BFEBF0005463AF /* che_pdf_crypto.cpp */,
+				90EF232720C1508200D959C6 /* che_pdf_object.cpp */,
 			);
 			name = source;
 			sourceTree = "<group>";
@@ -102,6 +108,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90EF232A20C1509100D959C6 /* che_pdf_object.h in Headers */,
 				9030B10F20C00EBA005463AF /* che_crypto_rc4.h in Headers */,
 				9030B10920BDB27F005463AF /* che_pdf_crypto.h in Headers */,
 				9030B11020C00EBA005463AF /* che_hash_md5.h in Headers */,
@@ -169,6 +176,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9030B10720BDB27F005463AF /* che_base_string.cpp in Sources */,
+				90EF232820C1508200D959C6 /* che_pdf_object.cpp in Sources */,
 				9030B10320BDB27F005463AF /* che_base_object.cpp in Sources */,
 				9030B10B20BFEBF0005463AF /* che_pdf_crypto.cpp in Sources */,
 				9030B11720C00FBE005463AF /* che_hash_md5.cpp in Sources */,
