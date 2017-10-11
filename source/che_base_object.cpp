@@ -382,15 +382,15 @@ IRead * IRead::CreateCrtFileIRead(char const * filename, FILEREAD_MODE mode, All
     return nullptr;
 }
 
-IRead * IRead::CreateMemoryIRead(PCBYTE pMemory, size_t size, Allocator * pAllocator)
+IRead * IRead::CreateMemoryIRead(PCBYTE pMemory, size_t size, Allocator * allocator)
 {
-    if (pAllocator == nullptr)
+    if (allocator == nullptr)
     {
-        pAllocator = Allocator::GetDefaultAllocator();
+        allocator = Allocator::GetDefaultAllocator();
     }
     if (pMemory != nullptr || size == 0)
     {
-        return pAllocator->New<IMemoryRead>(pMemory, size, pAllocator);
+        return allocator->New<IMemoryRead>(pMemory, size, allocator);
     }
     return nullptr;
 }
@@ -475,4 +475,225 @@ void MutexLock::UnLock()
 #endif
 }
     
+
+Buffer::Buffer(size_t capacity/*= 1024*/, size_t increament/*= 1024*/, Allocator * allocator/*= nullptr*/)
+: BaseObject(allocator)
+{
+    capacity_ = capacity;
+    increament_ = increament;
+    data_ = GetAllocator()->NewArray<BYTE>(capacity_);
+    memset(data_, 0, capacity_);
+    size_ = 0;
+}
+
+Buffer::Buffer( const Buffer & buffer )
+: BaseObject(buffer.GetAllocator())
+{
+    capacity_ = buffer.capacity_;
+    increament_ = buffer.increament_;
+    size_ = buffer.size_;
+    data_ = GetAllocator()->NewArray<uint8_t>(capacity_);
+    memset(data_, 0, capacity_);
+    if (size_ > 0)
+    {
+        memcpy(data_, buffer.data_, size_);
+    }
+}
+
+Buffer::~Buffer()
+{
+    if (data_)
+    {
+        GetAllocator()->DeleteArray<uint8_t>(data_);
+        data_ = nullptr;
+    }
+}
+
+const Buffer & Buffer::operator=(const Buffer & buffer)
+{
+    if (this != &buffer)
+    {
+        if (data_)
+        {
+            GetAllocator()->DeleteArray<uint8_t>(data_);
+        }
+        capacity_ = buffer.capacity_;
+        increament_ = buffer.increament_;
+        size_ = buffer.size_;
+        data_ = GetAllocator()->NewArray<uint8_t>(capacity_);
+        memset(data_, 0, capacity_);
+        if (size_> 0)
+        {
+            memcpy(data_, buffer.data_, size_);
+        }
+    }
+    return *this;
+}
+
+size_t Buffer::Write(const uint8_t * data, size_t offset, size_t size)
+{
+    if (data == nullptr || size == 0 || offset > size_)
+    {
+        return 0;
+    }
+    if (size + offset > capacity_)
+    {
+        size_t need = size + offset - capacity_;
+        if (need <= increament_)
+        {
+            need = 1;
+        }else{
+            need = (size_t)(need / increament_) + 1;
+        }
+        uint8_t * tmp_data = GetAllocator()->NewArray<BYTE>(capacity_ + need * increament_);
+        memset(tmp_data, 0, capacity_ + need * increament_);
+        memcpy(tmp_data, data_, size_);
+        memcpy(tmp_data + offset, data, size);
+        GetAllocator()->DeleteArray<uint8_t>(data_);
+        data_ = tmp_data;
+        size_ = offset + size;
+        capacity_ += need * increament_;
+        return size;
+    }else{
+        memcpy(data_ + offset, data, size);
+        size_ = offset + size;
+        return size;
+    }
+}
+
+void Buffer::Alloc(size_t size)
+{
+    if (size <= capacity_)
+    {
+        size_ = size;
+        return;
+    }
+    if (data_)
+    {
+        GetAllocator()->DeleteArray(data_);
+    }
+    data_ = GetAllocator()->NewArray<uint8_t>(size);
+    size_ = size;
+    capacity_ = size;
+    increament_ = size;
+}
+
+size_t Buffer::Write(const uint8_t * data, size_t size)
+{
+    return Write(data, size_, size);
+}
+
+size_t Buffer::Write(const Buffer & buffer)
+{
+    if (buffer.data_ == nullptr || buffer.size_ == 0)
+    {
+        return 0;
+    }
+    if (size_ + buffer.size_ > capacity_)
+    {
+        size_t need = size_ + buffer.size_ - capacity_;
+        if (need <= increament_)
+        {
+            need = 1;
+        }else{
+            need = (size_t)(need / increament_) + 1;
+        }
+        uint8_t * tmp_data = GetAllocator()->NewArray<uint8_t>(capacity_ + need * increament_);
+        memset(tmp_data, 0, capacity_ + need * increament_);
+        memcpy(tmp_data, data_, size_);
+        memcpy(tmp_data + size_, buffer.data_, buffer.size_);
+        GetAllocator()->DeleteArray<uint8_t>(data_);
+        data_ = tmp_data;
+        size_ += buffer.size_;
+        capacity_ += need * increament_;
+        return buffer.size_;
+    }else{
+        memcpy(data_ + size_, buffer.data_, buffer.size_);
+        size_ += buffer.size_;
+        return buffer.size_;
+    }
+}
+
+size_t Buffer::Read(uint8_t * buffer, size_t size)
+{
+    if (buffer == nullptr || size == 0)
+    {
+        return 0;
+    }
+    if (size_ < size)
+    {
+        size = size_;
+    }
+    memcpy(buffer, data_, size);
+    return size;
+}
+
+bool Buffer::ReadByte(size_t offset, uint8_t * byte)
+{
+    if (offset < size_)
+    {
+        *byte = *(data_ + offset);
+        return TRUE;
+    }
+    return false;
+}
+
+class IWriteBuffer : public IWrite
+{
+public:
+    IWriteBuffer(Buffer * buffer, Allocator * allocator = nullptr)
+    : IWrite(allocator), buffer_(buffer) {}
+    
+    ~IWriteBuffer() {}
+    
+    size_t GetSize()
+    {
+        if (buffer_)
+        {
+            return buffer_->GetSize();
+        }
+        return 0;
+    }
+    
+    size_t GetCurOffset()
+    {
+        if (GetSize() == 0)
+        {
+            return 0;
+        }
+        return GetSize()-1;
+    }
+    
+    size_t Flush() { return 0; }
+    
+    bool WriteBlock(const void * data, size_t offset, size_t size)
+    {
+        if (buffer_ == nullptr || data == nullptr || size == 0 || offset > GetSize())
+        {
+            return false;
+        }
+        buffer_->Write((uint8_t*)data, offset, size);
+        return TRUE;
+    }
+    
+    void Release() {}
+    
+private:
+    Buffer * buffer_;
+};
+
+IWrite * CreateBufferIWrite(Buffer * buffer, Allocator * allocator)
+{
+    if (buffer == nullptr)
+    {
+        return nullptr;
+    }
+    if (allocator == nullptr)
+    {
+        allocator = Allocator::GetDefaultAllocator();
+    }
+    return allocator->New<IWriteBuffer>(buffer, allocator);
+}
+    
+
 }//namespace
