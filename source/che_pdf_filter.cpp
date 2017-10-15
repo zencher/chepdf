@@ -2,10 +2,10 @@
 
 #include "../include/che_pdf_filter.h"
 
-#include "../extlib/zlib/zlib.h"
-#include "../extlib/libjpeg/jpeglib.h"
-#include "../extlib/jbig2dec/jbig2.h"
-#include "../extlib/openjpeg/openjpeg.h"
+#include "zlib.h"
+#include "/usr/local/include/jpeglib.h"
+#include "/usr/local/include/jbig2.h"
+#include "/usr/local/include/openjpeg-2.3/openjpeg.h"
 
 namespace chepdf {
 
@@ -1393,7 +1393,7 @@ void PdfDCTDFilter::Decode( uint8_t * data, size_t size, Buffer &buffer )
 
 
 
-static void fz_opj_error_callback(const char *msg, void *client_data)
+/*static void fz_opj_error_callback(const char *msg, void *client_data)
 {
 	//fz_context *ctx = (fz_context *)client_data;
 	//fz_warn(ctx, "openjpeg error: %s", msg);
@@ -1407,8 +1407,8 @@ static void fz_opj_warning_callback(const char *msg, void *client_data)
 
 static void fz_opj_info_callback(const char *msg, void *client_data)
 {
-	/* fz_warn("openjpeg info: %s", msg); */
-}
+	//fz_warn("openjpeg info: %s", msg);
+}*/
 
 PdfJPXFilter::PdfJPXFilter( Allocator * allocator /*= nullptr*/ )
     : PdfFilter(allocator)
@@ -1422,7 +1422,7 @@ PdfJPXFilter::~PdfJPXFilter()
 void	PdfJPXFilter::Encode( uint8_t * data, size_t size, Buffer & buffer )
 {
 }
-
+    
 void	PdfJPXFilter::Decode( uint8_t * data, size_t size, Buffer & buffer )
 {
     if ( !data || size <= 2 )
@@ -1430,12 +1430,12 @@ void	PdfJPXFilter::Decode( uint8_t * data, size_t size, Buffer & buffer )
         return;
     }
     
-	opj_event_mgr_t     evtmgr;
+    //todo, add some error handle please!
 	opj_dparameters_t   params;
-	opj_dinfo_t *       info = nullptr;
-	opj_cio_t *         cio = nullptr;
+    opj_codec_t *       info = nullptr;
+    opj_stream_t *      input_stream = nullptr;
 	opj_image_t *       jpx = nullptr;
-    CODEC_FORMAT        format;
+    OPJ_CODEC_FORMAT format;
 
 	int a, n, w, h, depth, sgnd;
 	int x, y, k, v;
@@ -1443,15 +1443,15 @@ void	PdfJPXFilter::Decode( uint8_t * data, size_t size, Buffer & buffer )
 	/* Check for SOC marker -- if found we have a bare J2K stream */
 	if ( data[0] == 0xFF && data[1] == 0x4F )
     {
-		format = CODEC_J2K;
+		format = OPJ_CODEC_J2K;
     }else{
-		format = CODEC_JP2;
+		format = OPJ_CODEC_JP2;
     }
     
-	memset(&evtmgr, 0, sizeof(evtmgr));
-	evtmgr.error_handler = fz_opj_error_callback;
-	evtmgr.warning_handler = fz_opj_warning_callback;
-	evtmgr.info_handler = fz_opj_info_callback;
+	//memset(&evtmgr, 0, sizeof(evtmgr));
+	//evtmgr.error_handler = fz_opj_error_callback;
+	//evtmgr.warning_handler = fz_opj_warning_callback;
+	//evtmgr.info_handler = fz_opj_info_callback;
     
 	opj_set_default_decoder_parameters( &params );
 	
@@ -1462,15 +1462,19 @@ void	PdfJPXFilter::Decode( uint8_t * data, size_t size, Buffer & buffer )
     
 	info = opj_create_decompress( format );
     
-	opj_set_event_mgr( (opj_common_ptr)info, &evtmgr, nullptr );
-	opj_setup_decoder( info, &params );
+	//opj_set_event_mgr( (opj_common_ptr)info, &evtmgr, nullptr );
+	opj_setup_decoder(info, &params );
     
-	cio = opj_cio_open( (opj_common_ptr)info, data, (uint32_t)size );
+    input_stream = opj_stream_default_create(true);
+    opj_stream_set_user_data(input_stream, data, nullptr);
+    opj_stream_set_user_data_length(input_stream, size);
     
-	jpx = opj_decode( info, cio );
+	//cio = opj_cio_open( (opj_common_ptr)info, data, (uint32_t)size );
     
-	opj_cio_close( cio );
-	opj_destroy_decompress( info );
+    opj_decode(info, input_stream, jpx);
+    
+    opj_stream_destroy(input_stream);
+	opj_destroy_codec(info);
     
 	if ( !jpx )
     {
@@ -1503,8 +1507,8 @@ void	PdfJPXFilter::Decode( uint8_t * data, size_t size, Buffer & buffer )
 	depth = jpx->comps[0].prec;
 	sgnd = jpx->comps[0].sgnd;
     
-	if (jpx->color_space == CLRSPC_SRGB && n == 4) { n = 3; a = 1; }
-	else if (jpx->color_space == CLRSPC_SYCC && n == 4) { n = 3; a = 1; }
+	if (jpx->color_space == OPJ_CLRSPC_SRGB && n == 4) { n = 3; a = 1; }
+	else if (jpx->color_space == OPJ_CLRSPC_SYCC && n == 4) { n = 3; a = 1; }
 	else if (n == 2) { n = 1; a = 1; }
 	else if (n > 4) { n = 4; a = 1; }
 	else { a = 0; }
