@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-typedef uint8_t			BYTE;
+/*typedef uint8_t			BYTE;
 typedef uint8_t *		PBYTE;
 typedef uint8_t const *	PCBYTE;
 typedef int16_t			INT16;
@@ -11,7 +11,7 @@ typedef uint16_t		UINT16;
 typedef int32_t			INT32;
 typedef uint32_t		UINT32;
 typedef int64_t			INT64;
-typedef uint64_t		UINT64;
+typedef uint64_t		UINT64;*/
 
 #ifdef _MSC_VER
 	#ifndef _WCHAR_T_DEFINED
@@ -24,6 +24,6 @@ typedef wchar_t *		PWSTR;
 typedef wchar_t const *	PCWSTR;
 typedef float			FLOAT;
 typedef double			DOUBLE;
-typedef UINT32			ARGB;
+typedef uint32_t    	ARGB;
 
 #endif

@@ -54,7 +54,7 @@ public:
 	bool SetData(uint8_t * data, uint32_t length);
 	char const * GetData() const;
 
-	INT32 GetInteger() const;
+	int32_t GetInteger() const;
 	FLOAT GetFloat() const;
 
 	void Clear();
@@ -145,7 +145,7 @@ bool operator!=(const wchar_t *  lstr, WideString & str);
 #define C(a,b,c)	(a | b<<8 | c<<16)
 #define D(a,b,c,d)	(a | b<<8 | c<<16 | d<<24)
 
-UINT32 StringToUINT32(const ByteString & str);
+uint32_t StringToUINT32(const ByteString & str);
 
 }//namespace
 

@@ -779,7 +779,7 @@ public:
     
     PdfStreamPointer GetStream() const { return stream_; }
     
-    PBYTE GetData() const { return data_; }
+    uint8_t * GetData() const { return data_; }
     size_t GetSize() const { return size_; }
     
 private:

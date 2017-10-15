@@ -1251,7 +1251,7 @@ PdfStream::PdfStream(uint8_t * data, size_t size, const PdfDictionaryPointer & d
 {
 	if (data != nullptr && size != 0)
 	{
-		data_ = GetAllocator()->NewArray<BYTE>(size);
+		data_ = GetAllocator()->NewArray<uint8_t>(size);
 		memcpy(data_, data, size);
 	}
 	if (dictionary)
@@ -1288,7 +1288,7 @@ PdfStream::~PdfStream()
 {
  	if (b_memory_stream == true && data_)
  	{
-		GetAllocator()->DeleteArray<BYTE>(data_);
+		GetAllocator()->DeleteArray<uint8_t>(data_);
  	}
 }
 
@@ -1340,7 +1340,7 @@ bool PdfStream::SetRawData(uint8_t * data, size_t size, uint8_t filter/* = STREA
 	}else{
 		if (data_ != nullptr)
 		{
-			GetAllocator()->DeleteArray<BYTE>(data_);
+			GetAllocator()->DeleteArray<uint8_t>(data_);
 			data_ = nullptr;
 			size_ = 0;
 		}

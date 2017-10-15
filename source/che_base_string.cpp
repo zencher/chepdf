@@ -326,7 +326,7 @@ char ByteString::operator[](uint32_t index) const
 	}
 }
 
-INT32 ByteString::GetInteger() const
+int32_t ByteString::GetInteger() const
 {
 	return atoi(GetData());
 }
@@ -1096,7 +1096,7 @@ wchar_t WideString::operator[](uint32_t index) const
 	}
 }
 
-INT32 WideString::GetInteger() const
+int32_t WideString::GetInteger() const
 {
 	if (GetLength() == 0)
 	{
@@ -1105,7 +1105,7 @@ INT32 WideString::GetInteger() const
 	else{
 		bool bBegin = TRUE;
 		bool bNegative = false;
-		UINT32 iValue = 0;
+		uint32_t iValue = 0;
 		bool bSign = false;
 		wchar_t  tmpChar = 0;
 		for (size_t i = 0; i < GetLength(); i++)
@@ -1680,7 +1680,7 @@ bool operator!=(wchar_t const * pstr, const WideString & str)
 	return (str != pstr);
 }
 
-UINT32 StringToUINT32(const ByteString & str)
+uint32_t StringToUINT32(const ByteString & str)
 {
 	if (str.GetLength() == 0)
 	{
@@ -1691,7 +1691,7 @@ UINT32 StringToUINT32(const ByteString & str)
 	{
 		length = str.GetLength();
 	}
-	UINT32 valRet = 0;
+	uint32_t valRet = 0;
 	for (size_t i = length; i > 0; --i)
 	{
 		valRet = valRet << 8;

@@ -188,7 +188,7 @@ public:
 
     virtual	bool WriteBlock(const void * pData, size_t offset, size_t size) = 0;
     virtual	bool WriteBlock(const void * pData, size_t size) { return WriteBlock(pData, GetSize(), size); }
-    virtual bool WriteByte(BYTE byte) { return WriteBlock(&byte, 1); }
+    virtual bool WriteByte(uint8_t byte) { return WriteBlock(&byte, 1); }
 
     virtual void Release() = 0;
 };
@@ -203,7 +203,7 @@ public:
     };
 
     static IRead * CreateCrtFileIRead(char const * filename, FILEREAD_MODE mode, Allocator * allocator);
-    static IRead * CreateMemoryIRead(PCBYTE pMemory, size_t size, Allocator * allocator);
+    static IRead * CreateMemoryIRead(const uint8_t * pMemory, size_t size, Allocator * allocator);
     static void DestroyIRead(IRead * pIRead);
 
     IRead(Allocator * allocator) : BaseObject(allocator) {}
@@ -211,7 +211,7 @@ public:
 
     virtual size_t GetSize() = 0;
     virtual size_t ReadBlock(void * buffer, size_t offset, size_t size) = 0;
-    virtual bool ReadByte(size_t offset, BYTE & byte) = 0;
+    virtual bool ReadByte(size_t offset, uint8_t & byte) = 0;
     virtual void Release() = 0;
 };
 
@@ -227,7 +227,7 @@ public:
 
 private:
 #ifdef _MAC_OS_X_
-    INT32 referenceCount_;
+    int32_t referenceCount_;
 #else
     long referenceCount_;
 #endif

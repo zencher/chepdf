@@ -174,7 +174,7 @@ public:
 
     virtual size_t GetSize();
     virtual size_t ReadBlock(void * buffer, size_t offset, size_t size);
-    virtual bool ReadByte(size_t offset, BYTE & byte);
+    virtual bool ReadByte(size_t offset, uint8_t & byte);
     virtual void Release();
 
 private:
@@ -189,11 +189,11 @@ public:
 
     virtual size_t GetSize();
     virtual size_t ReadBlock(void * buffer, size_t offset, size_t size);
-    virtual bool ReadByte(size_t offset, BYTE & byte);
+    virtual bool ReadByte(size_t offset, uint8_t & byte);
     virtual void Release();
 
 private:
-    PBYTE pBuf_;
+    uint8_t * pBuf_;
     size_t bufSize_;
 };
 
@@ -241,7 +241,7 @@ size_t ICrtFileReadDefault::ReadBlock(void * buffer, size_t offset, size_t size)
     return 0;
 }
 
-bool ICrtFileReadDefault::ReadByte(size_t offset, BYTE & byte)
+bool ICrtFileReadDefault::ReadByte(size_t offset, uint8_t & byte)
 {
     if (pFile_)
     {
@@ -278,7 +278,7 @@ ICrtFileReadMemoryCopy::ICrtFileReadMemoryCopy(char const * filename, Allocator 
         fseek(pFile, 0, SEEK_END);
         bufSize_ = ftell(pFile);
         fseek(pFile, 0, SEEK_SET);
-        pBuf_ = GetAllocator()->NewArray<BYTE>(bufSize_);
+        pBuf_ = GetAllocator()->NewArray<uint8_t>(bufSize_);
         fread(pBuf_, 1, bufSize_, pFile);
         fclose(pFile);
     }
@@ -288,7 +288,7 @@ ICrtFileReadMemoryCopy::~ICrtFileReadMemoryCopy()
 {
     if (pBuf_)
     {
-        GetAllocator()->DeleteArray<BYTE>(pBuf_);
+        GetAllocator()->DeleteArray<uint8_t>(pBuf_);
     }
 }
 
@@ -306,7 +306,7 @@ size_t ICrtFileReadMemoryCopy::ReadBlock(void * buffer, size_t offset, size_t si
     return 0;
 }
 
-bool ICrtFileReadMemoryCopy::ReadByte(size_t offset, BYTE & byte)
+bool ICrtFileReadMemoryCopy::ReadByte(size_t offset, uint8_t & byte)
 {
     if (offset < bufSize_)
     {
@@ -319,17 +319,17 @@ bool ICrtFileReadMemoryCopy::ReadByte(size_t offset, BYTE & byte)
 class IMemoryRead : public IRead
 {
 public:
-    IMemoryRead(PCBYTE pBuf, size_t size, Allocator * allocator)
+    IMemoryRead(const uint8_t * pBuf, size_t size, Allocator * allocator)
         : IRead(allocator), pBuf_(nullptr), bufSize_(0) {}
     virtual ~IMemoryRead() {};
 
     virtual size_t GetSize() { return bufSize_; }
     virtual size_t ReadBlock(void * buffer, size_t offset, size_t size);
-    virtual bool ReadByte(size_t offset, BYTE & byte);
+    virtual bool ReadByte(size_t offset, uint8_t & byte);
     virtual void Release() { pBuf_ = nullptr; bufSize_ = 0; }
 
 private:
-    PCBYTE	pBuf_;
+    const uint8_t *	pBuf_;
     size_t	bufSize_;
 };
 
@@ -351,7 +351,7 @@ size_t IMemoryRead::ReadBlock(void * buffer, size_t offset, size_t size)
     return 0;
 }
 
-bool IMemoryRead::ReadByte(size_t offset, BYTE & byte)
+bool IMemoryRead::ReadByte(size_t offset, uint8_t & byte)
 {
     if (offset < bufSize_)
     {
@@ -382,7 +382,7 @@ IRead * IRead::CreateCrtFileIRead(char const * filename, FILEREAD_MODE mode, All
     return nullptr;
 }
 
-IRead * IRead::CreateMemoryIRead(PCBYTE pMemory, size_t size, Allocator * allocator)
+IRead * IRead::CreateMemoryIRead(const uint8_t * pMemory, size_t size, Allocator * allocator)
 {
     if (allocator == nullptr)
     {
@@ -481,7 +481,7 @@ Buffer::Buffer(size_t capacity/*= 1024*/, size_t increament/*= 1024*/, Allocator
 {
     capacity_ = capacity;
     increament_ = increament;
-    data_ = GetAllocator()->NewArray<BYTE>(capacity_);
+    data_ = GetAllocator()->NewArray<uint8_t>(capacity_);
     memset(data_, 0, capacity_);
     size_ = 0;
 }
@@ -545,7 +545,7 @@ size_t Buffer::Write(const uint8_t * data, size_t offset, size_t size)
         }else{
             need = (size_t)(need / increament_) + 1;
         }
-        uint8_t * tmp_data = GetAllocator()->NewArray<BYTE>(capacity_ + need * increament_);
+        uint8_t * tmp_data = GetAllocator()->NewArray<uint8_t>(capacity_ + need * increament_);
         memset(tmp_data, 0, capacity_ + need * increament_);
         memcpy(tmp_data, data_, size_);
         memcpy(tmp_data + offset, data, size);
