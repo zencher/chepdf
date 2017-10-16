@@ -286,6 +286,9 @@ public:
     FLOAT	height;
 };
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 #define FMAX4(a,b,c,d) fmax(fmax(a,b), fmax(c,d))
 #define FMIN4(a,b,c,d) fmin(fmin(a,b), fmin(c,d))
@@ -499,7 +502,7 @@ public:
     FLOAT GetFloat() const { return b_integer_ ? (FLOAT)interger_ : float_; }
     
     void SetValue(int32_t value) { b_integer_ = TRUE; interger_ = value; SetModified(true); }
-    void SetValue(FLOAT value) { b_integer_ = false; interger_ = value; SetModified(true); }
+    void SetValue(FLOAT value) { b_integer_ = false; float_ = value; SetModified(true); }
     
 private:
     PdfNumber(int32_t value, Allocator * allocator = nullptr)
