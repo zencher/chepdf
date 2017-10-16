@@ -18,6 +18,8 @@
     <ClInclude Include="..\..\..\include\che_crypto_rc4.h" />
     <ClInclude Include="..\..\..\include\che_hash_md5.h" />
     <ClInclude Include="..\..\..\include\che_pdf_crypto.h" />
+    <ClInclude Include="..\..\..\include\che_pdf_filter.h" />
+    <ClInclude Include="..\..\..\include\che_pdf_object.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\che_base_object.cpp" />
@@ -26,6 +28,8 @@
     <ClCompile Include="..\..\..\source\che_crypto_rc4.cpp" />
     <ClCompile Include="..\..\..\source\che_hash_md5.cpp" />
     <ClCompile Include="..\..\..\source\che_pdf_crypto.cpp" />
+    <ClCompile Include="..\..\..\source\che_pdf_filter.cpp" />
+    <ClCompile Include="..\..\..\source\che_pdf_object.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3FD749A1-0F9D-48C1-B7E7-39DDBE417E65}</ProjectGuid>
