@@ -121,8 +121,8 @@ public:
     ~PdfObjectPointer();
     
     PdfObjectPointer operator=( const PdfObjectPointer & pointer );
-    bool operator!() const { return object_ ? false : TRUE; }
-    operator bool() const { return object_ ? TRUE : false; }
+    bool operator!() const { return object_ ? false : true; }
+    operator bool() const { return object_ ? true : false; }
     PdfObject * operator->() const { return object_; }
     
     void Reset( PdfObject * object = nullptr );
@@ -473,7 +473,7 @@ public:
     PdfBooleanPointer Clone();
     
     bool GetValue() { return value_; }
-    void SetValue(bool value) { value_ = value; SetModified( TRUE ); }
+    void SetValue(bool value) { value_ = value; SetModified( true ); }
     
 private:
     PdfBoolean(Allocator * allocator = nullptr)
@@ -501,7 +501,7 @@ public:
     int32_t GetInteger() const { return b_integer_ ? interger_ : (int32_t)float_; }
     FLOAT GetFloat() const { return b_integer_ ? (FLOAT)interger_ : float_; }
     
-    void SetValue(int32_t value) { b_integer_ = TRUE; interger_ = value; SetModified(true); }
+    void SetValue(int32_t value) { b_integer_ = true; interger_ = value; SetModified(true); }
     void SetValue(FLOAT value) { b_integer_ = false; float_ = value; SetModified(true); }
     
 private:

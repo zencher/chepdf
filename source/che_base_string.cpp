@@ -5,11 +5,6 @@
 
 #include "../include/che_base_string.h"
 
-//@zctodo:optimize:simpleness:for,class,ByteString:"make ByteStringData a class, maintain the refcount and data by itself";
-//@zctodo:optimize:performance:for,class,ByteString:"reduce memory copy times";
-//@zctodo:optimize:simpleness:for,class,WideString:"make WideStringData a class, maintain the refcount and data by itself"
-//@zctodo:optimize:performance:for,class,WideString:"reduce memory copy times";
-
 namespace chepdf
 {
 
@@ -252,7 +247,7 @@ bool ByteString::SetData(uint8_t * pData, uint32_t length)
 	if (pData == nullptr || length == 0)
 	{
 		Clear();
-		return TRUE;
+		return true;
 	}
 	if (data_ == nullptr)
 	{
@@ -286,7 +281,7 @@ bool ByteString::SetData(uint8_t * pData, uint32_t length)
 			data_->str_[length] = '\0';
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 char const * ByteString::GetData() const
@@ -1022,7 +1017,7 @@ bool WideString::SetData(wchar_t * pData, uint32_t length)
 	if (pData == nullptr || length == 0)
 	{
 		Clear();
-		return TRUE;
+		return true;
 	}
 	if (data_ == nullptr)
 	{
@@ -1056,7 +1051,7 @@ bool WideString::SetData(wchar_t * pData, uint32_t length)
 			data_->str_[length] = '\0';
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 wchar_t const * WideString::GetData() const
@@ -1103,7 +1098,7 @@ int32_t WideString::GetInteger() const
 		return 0;
 	}
 	else{
-		bool bBegin = TRUE;
+		bool bBegin = true;
 		bool bNegative = false;
 		uint32_t iValue = 0;
 		bool bSign = false;
@@ -1118,9 +1113,9 @@ int32_t WideString::GetInteger() const
 			switch (tmpChar)
 			{
 			case '+':
-				if (bSign == false && bBegin == TRUE)
+				if (bSign == false && bBegin == true)
 				{
-					bSign = TRUE;
+					bSign = true;
 					bNegative = false;
 				}
 				else{
@@ -1128,10 +1123,10 @@ int32_t WideString::GetInteger() const
 				}
 				break;
 			case '-':
-				if (bSign == false && bBegin == TRUE)
+				if (bSign == false && bBegin == true)
 				{
-					bSign = TRUE;
-					bNegative = TRUE;
+					bSign = true;
+					bNegative = true;
 				}
 				else{
 					return 0;
@@ -1148,7 +1143,7 @@ int32_t WideString::GetInteger() const
 				break;
 			}
 		}
-		if (bNegative == TRUE)
+		if (bNegative == true)
 		{
 			return 0 - iValue;
 		}
@@ -1166,7 +1161,7 @@ FLOAT WideString::GetFloat() const
 	}
 	else{
 		bool bNegative = false;
-		bool bBegin = TRUE;
+		bool bBegin = true;
 		size_t lPointBit = 1;
 		FLOAT fValue = 0;
 		bool bPoint = false;
@@ -1182,9 +1177,9 @@ FLOAT WideString::GetFloat() const
 			switch (tmpChar)
 			{
 			case L'+':
-				if (bSign == false && bBegin == TRUE)
+				if (bSign == false && bBegin == true)
 				{
-					bSign = TRUE;
+					bSign = true;
 					bNegative = false;
 				}
 				else{
@@ -1192,10 +1187,10 @@ FLOAT WideString::GetFloat() const
 				}
 				break;
 			case L'-':
-				if (bSign == false && bBegin == TRUE)
+				if (bSign == false && bBegin == true)
 				{
-					bSign = TRUE;
-					bNegative = TRUE;
+					bSign = true;
+					bNegative = true;
 				}
 				else{
 					return 0;
@@ -1204,7 +1199,7 @@ FLOAT WideString::GetFloat() const
 			case L'.':
 				if (bPoint == false)
 				{
-					bPoint = TRUE;
+					bPoint = true;
 				}
 				else{
 					return 0;
@@ -1228,7 +1223,7 @@ FLOAT WideString::GetFloat() const
 				break;
 			}
 		}
-		if (bNegative == TRUE)
+		if (bNegative == true)
 		{
 			return 0 - fValue;
 		}

@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <memory>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #include <intrin.h>
 #endif
@@ -24,14 +24,18 @@ public:
 
     inline size_t GetSize(void * data)
     {
-#ifdef WIN32
+#ifdef _WIN32
         return _msize(data);
-#endif
+#else
 #ifdef _LINUX_
         return malloc_usable_size(data);
-#endif
+#else
 #ifdef _MAC_OS_X_
         return malloc_size(data);
+#else
+        return 0;
+#endif
+#endif
 #endif
     }
 };
@@ -406,7 +410,7 @@ void IRead::DestroyIRead(IRead * pIRead)
 
 inline void ReferenceCount::Increase()
 {
-#ifdef WIN32
+#ifdef _WIN32
     _InterlockedIncrement(&referenceCount_);
 #endif
 
@@ -417,7 +421,7 @@ inline void ReferenceCount::Increase()
 
 inline void ReferenceCount::Decrease()
 {
-#ifdef WIN32
+#ifdef _WIN32
     _InterlockedDecrement(&referenceCount_);
 #endif
 
@@ -429,8 +433,8 @@ inline void ReferenceCount::Decrease()
 
 MutexLock::MutexLock()
 {
-#ifdef WIN32
-    mutex_ = CreateMutex(NULL, FALSE, NULL);
+#ifdef _WIN32
+    mutex_ = CreateMutex(NULL, false, NULL);
 #endif
 
 #ifdef _MAC_OS_X_
@@ -440,7 +444,7 @@ MutexLock::MutexLock()
 
 MutexLock::~MutexLock()
 {
-#ifdef WIN32
+#ifdef _WIN32
     if (mutex_)
     {
         CloseHandle(mutex_);
@@ -455,7 +459,7 @@ MutexLock::~MutexLock()
 
 void MutexLock::Lock()
 {
-#ifdef WIN32
+#ifdef _WIN32
     WaitForSingleObject(mutex_, INFINITE);
 #endif
 
@@ -466,7 +470,7 @@ void MutexLock::Lock()
 
 void MutexLock::UnLock()
 {
-#ifdef WIN32
+#ifdef _WIN32
     ReleaseMutex(mutex_);
 #endif
 
@@ -633,7 +637,7 @@ bool Buffer::ReadByte(size_t offset, uint8_t * byte)
     if (offset < size_)
     {
         *byte = *(data_ + offset);
-        return TRUE;
+        return true;
     }
     return false;
 }
@@ -673,7 +677,7 @@ public:
             return false;
         }
         buffer_->Write((uint8_t*)data, offset, size);
-        return TRUE;
+        return true;
     }
     
     void Release() {}

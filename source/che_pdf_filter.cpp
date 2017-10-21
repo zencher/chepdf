@@ -2,7 +2,7 @@
 
 #include "../include/che_pdf_filter.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "../extlib/zlib.h"
 #include "../extlib/jpeglib.h"
 #include "../extlib/jbig2.h"

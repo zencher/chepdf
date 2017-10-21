@@ -1,12 +1,11 @@
-#include "../include/che_pdf_crypto.h"
-
-#include "../include/che_hash_md5.h"
-#include "../include/che_crypto_rc4.h"
-#include "../include/che_crypto_aes.h"
-
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+
+#include "../include/che_pdf_crypto.h"
+#include "../include/che_hash_md5.h"
+#include "../include/che_crypto_rc4.h"
+#include "../include/che_crypto_aes.h"
 
 namespace chepdf {
     
@@ -60,7 +59,7 @@ void PdfCrypto::Init(const ByteString userPassword, const ByteString ownerPasswo
 	}
 	ComputeEncryptionKey(userPad, encryptionKey);
 	ComputeUserKey(encryptionKey, u_);
-	b_password_ok_ = TRUE;
+	b_password_ok_ = true;
 }
 
 void PdfCrypto::PadPassword(const ByteString & password, unsigned char pswd[32])
@@ -157,7 +156,7 @@ void PdfCrypto::CreateObjKey(uint32_t objNum, uint32_t genNum, uint8_t objkey[16
 
 bool PdfCrypto::Authenticate(const ByteString & password)
 {
-	bool bRet = TRUE;
+	bool bRet = true;
 	uint8_t padpswd[32];
 	uint8_t userKey[32];
 	uint8_t encrypt[16];
@@ -173,9 +172,9 @@ bool PdfCrypto::Authenticate(const ByteString & password)
 	}
 	if (!bRet)
 	{
-		bRet = TRUE;
+		bRet = true;
 		unsigned char userpswd[32];
-		ComputeOwnerKey(o_, padpswd, userpswd, TRUE);
+		ComputeOwnerKey(o_, padpswd, userpswd, true);
 		ComputeEncryptionKey(userpswd, encrypt);
 		ComputeUserKey(encrypt, userKey);
 		kmax = 32;
@@ -184,9 +183,9 @@ bool PdfCrypto::Authenticate(const ByteString & password)
 			bRet = bRet && (userKey[k] == u_[k]);
 		}
 	}
-	if (bRet == TRUE)
+	if (bRet == true)
 	{
-		b_password_ok_ = TRUE;
+		b_password_ok_ = true;
 		for (uint32_t i = 0; i < 16; i++)
 		{
 			encryption_key_[i] = encrypt[i];

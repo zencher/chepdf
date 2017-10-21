@@ -7,20 +7,17 @@
 #ifdef _MAC_OS_X_
 #include <malloc/malloc.h>
 #include <pthread.h>
-#else
+#endif
+
+#ifdef _WIN32
 #include <malloc.h>
-#endif
-
-#ifdef WIN32
-#include <windows.h>
-#undef GetObject
-#endif
-
-#include "che_base_define.h"
-
+#include <Windows.h>
 #if _MSC_VER>=1800
 #define CPP_VARIADIC_TEMPLATE
 #endif
+#endif
+
+#include "che_base_define.h"
 
 namespace chepdf
 {
@@ -76,15 +73,15 @@ public:
         Free(p);
     }
 
-#ifdef  CPP_VARIADIC_TEMPLATE
+//#ifdef  CPP_VARIADIC_TEMPLATE
     template <class Type, typename... Args>
     inline Type * New(Args... args)
     {
         void* obj = Alloc(sizeof(Type));
         return new(obj) Type(args...);
     }
-#else
-    template <class Type, class Arg1>
+//#else
+/*    template <class Type, class Arg1>
     inline Type* New(Arg1 arg1)
     {
         void* obj = Alloc(sizeof(Type));
@@ -153,7 +150,7 @@ public:
         void* obj = Alloc(sizeof(Type));
         return new(obj) Type(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
     }
-#endif
+#endif*/
 };
 
 class BaseObject
@@ -244,7 +241,7 @@ public:
     void UnLock();
 
 private:
-#ifdef WIN32
+#ifdef _WIN32
     HANDLE	mutex_;
 #endif
 
