@@ -2,17 +2,10 @@
 
 #include "../include/che_pdf_filter.h"
 
-#ifdef _WIN32
-#include "../extlib/zlib.h"
-#include "../extlib/jpeglib.h"
-#include "../extlib/jbig2.h"
-#include "../extlib/openjpeg.h"
-#else
 #include "zlib.h"
-#include "/usr/local/include/jpeglib.h"
-#include "/usr/local/include/jbig2.h"
-#include "/usr/local/include/openjpeg-2.3/openjpeg.h"
-#endif
+#include "jpeglib.h"
+#include "jbig2.h"
+#include "openjpeg.h"
 
 namespace chepdf {
 

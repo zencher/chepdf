@@ -10,32 +10,13 @@ ADD_DEFINITIONS(-std=c++11)
 #add executable file
 ADD_LIBRARY(chepdf ${DIR_SRCS})
 
-CONFIGURE_FILE(
-    "include/config.h.in"
-    "include/config.h"
-)
+find_package(zlib REQUIRED)
+find_package(jpeg REQUIRED)
+find_package(openjpeg REQUIRED)
+find_package(freetype REQUIRED)
 
-MESSAGE(STATUS "###################################")
- 
-MESSAGE(STATUS "operation system is ${CMAKE_SYSTEM}")
- 
-IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
-    MESSAGE(STATUS "current platform: Linux ")
-ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    MESSAGE(STATUS "current platform: Windows")
-ELSEIF (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
-    MESSAGE(STATUS "current platform: FreeBSD")
-ELSE ()
-    MESSAGE(STATUS "other platform: ${CMAKE_SYSTEM_NAME}")
-ENDIF (CMAKE_SYSTEM_NAME MATCHES "Linux")
- 
-IF (WIN32)
-    MESSAGE(STATUS "Now is windows")
-ELSEIF (APPLE)
-    MESSAGE(STATUS "Now is Apple systens.")
+INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS} ${JPEG_INCLUDE_DIRS} ${OPENJPEG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} "/usr/local/include")
+
+IF (APPLE)
     ADD_DEFINITIONS(-D_MAC_OS_X_)
-ELSEIF (UNIX)
-    MESSAGE(STATUS "Now is UNIX-like OS's. Including aPPLE os x  and CygWin")
 ENDIF ()
-
-MESSAGE(STATUS "###################################")
