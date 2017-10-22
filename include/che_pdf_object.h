@@ -119,7 +119,7 @@ class PdfObjectPointer
 public:
     PdfObjectPointer() : object_( nullptr ) {}
     PdfObjectPointer( const PdfObjectPointer & pointer );
-    ~PdfObjectPointer();
+    virtual ~PdfObjectPointer();
     
     PdfObjectPointer operator=( const PdfObjectPointer & pointer );
     bool operator!() const { return object_ ? false : true; }

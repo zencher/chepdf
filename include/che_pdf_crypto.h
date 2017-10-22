@@ -32,6 +32,8 @@ public:
 
 	PdfCrypto(const ByteString id, uint8_t algorithm, uint8_t version, uint8_t revision,
               uint8_t key_length, bool b_meta_data, uint32_t p, Allocator * allocator = nullptr);
+    
+    virtual ~PdfCrypto() {}
 
 	void Init(const ByteString userPassword, const ByteString ownerPassword);
 

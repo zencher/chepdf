@@ -251,6 +251,10 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SYSTEM_HEADER_SEARCH_PATHS = (
+					"/usr/local/include/openjpeg-2.3/",
+					/usr/local/include/,
+				);
 			};
 			name = Debug;
 		};
@@ -303,6 +307,10 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SYSTEM_HEADER_SEARCH_PATHS = (
+					"/usr/local/include/openjpeg-2.3/",
+					/usr/local/include/,
+				);
 			};
 			name = Release;
 		};

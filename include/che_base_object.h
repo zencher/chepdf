@@ -157,6 +157,7 @@ class BaseObject
 {
 public:
     BaseObject(Allocator * allocator);
+    virtual ~BaseObject() {}
 
     Allocator * GetAllocator() const { return allocator_; }
 
@@ -256,7 +257,7 @@ class Buffer : public BaseObject
 public:
     Buffer(size_t capacity = 1024, size_t increament = 1024, Allocator * allocator = nullptr);
     Buffer(const Buffer & buffer);
-    ~Buffer();
+    virtual ~Buffer();
     
     const Buffer & operator=(const Buffer & buffer);
     
