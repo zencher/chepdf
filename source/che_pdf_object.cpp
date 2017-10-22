@@ -1471,7 +1471,7 @@ size_t PdfStream::GetRawData(size_t offset, uint8_t * buffer, size_t buffer_size
 	}
 }
 
-PdfStreamAccess::PdfStreamAccess(Allocator * allocator) : BaseObject(allocator), size_(0), data_(nullptr) {}
+PdfStreamAccess::PdfStreamAccess(Allocator * allocator) : BaseObject(allocator), data_(nullptr), size_(0) {}
 
 PdfStreamAccess::~PdfStreamAccess()
 {

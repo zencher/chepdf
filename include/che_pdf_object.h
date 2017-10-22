@@ -104,6 +104,7 @@ public:
     
 protected:
     PdfObject( PDF_OBJ_TYPE type, Allocator * allocator = nullptr );
+    virtual ~PdfObject() {}
     
     bool                b_modified_;
     PDF_OBJ_TYPE        type_;
