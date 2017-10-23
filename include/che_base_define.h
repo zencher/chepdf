@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-#include "config.h"
-
 #ifndef FALSE
 #define FALSE 0
 #endif

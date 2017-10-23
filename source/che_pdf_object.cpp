@@ -2,7 +2,7 @@
 
 #include "../include/che_pdf_object.h"
 #include "../include/che_pdf_crypto.h"
-//#include "../include/che_pdf_filter.h"
+#include "../include/che_pdf_filter.h"
 //#include "../include/che_pdf_parser.h"
 //#include "../include/che_pdf_file.h"
 
@@ -1361,72 +1361,72 @@ bool PdfStream::SetRawData(uint8_t * data, size_t size, uint8_t filter/* = STREA
 		}
 	case STREAM_FILTER_HEX:
 		{
-			/*CDynBuffer buf;
-			CPDF_HexFilter filter;
-			filter.Encode( pData, dwDataSize, buf );
-			if ( buf.GetSize() > 0 )
-			{
-				m_pDataBuf = GetAllocator()->NewArray<BYTE>( buf.GetSize() );
-				m_dwSize = buf.GetSize();
-				memcpy( m_pDataBuf, buf.GetData(), m_dwSize );
-				mDictPointer->SetName( "Filter", "ASCIIHexDecode" );
-			}*/
+            Buffer buffer;
+            PdfHexFilter filter(GetAllocator());
+            filter.Encode(data, size, buffer);
+            if (buffer.GetSize() > 0)
+            {
+                data_ = GetAllocator()->NewArray<uint8_t>(buffer.GetSize());
+                size_ = buffer.GetSize();
+                memcpy(data_, buffer.GetData(), buffer.GetSize());
+                dictionary_->SetName( "Filter", "ASCIIHexDecode" );
+            }
 			break;
 		}
 	case STREAM_FILTER_ASCII85:
 		{
-			/*CDynBuffer buf;
-			CPDF_ASCII85Filter filter;
-			filter.Encode( pData, dwDataSize, buf );
-			if ( buf.GetSize() > 0 )
-			{
-				m_pDataBuf = GetAllocator()->NewArray<BYTE>( buf.GetSize() );
-				m_dwSize = buf.GetSize();
-				memcpy( m_pDataBuf, buf.GetData(), m_dwSize );
-				mDictPointer->SetName( "Filter", "ASCII85Decode" );
-			}*/
+            Buffer buffer;
+            PdfASCII85Filter filter(GetAllocator());
+            filter.Encode(data, size, buffer);
+            if (buffer.GetSize() > 0)
+            {
+                data_ = GetAllocator()->NewArray<uint8_t>(buffer.GetSize());
+                size_ = buffer.GetSize();
+                memcpy(data_, buffer.GetData(), buffer.GetSize());
+                dictionary_->SetName( "Filter", "ASCII85Decode" );
+            }
 			break;
 		}
 	case STREAM_FILTER_FLATE:
 		{
-			/*CDynBuffer buf;
-			CPDF_FlateFilter filter;
-			filter.Encode( pData, dwDataSize, buf );
-			if ( buf.GetSize() > 0 )
-			{
-				m_pDataBuf = GetAllocator()->NewArray<BYTE>( buf.GetSize() );
-				m_dwSize = buf.GetSize();
-				memcpy( m_pDataBuf, buf.GetData(), m_dwSize );
-				mDictPointer->SetName( "Filter", "FlateDecode" );
-			}*/
+            Buffer buffer;
+            PdfFlateFilter filter(GetAllocator());
+            filter.Encode(data, size, buffer);
+            if (buffer.GetSize() > 0)
+            {
+                data_ = GetAllocator()->NewArray<uint8_t>(buffer.GetSize());
+                size_ = buffer.GetSize();
+                memcpy(data_, buffer.GetData(), buffer.GetSize());
+                dictionary_->SetName( "Filter", "FlateDecode" );
+            }
 			break;
 		}
 	case STREAM_FILTER_LZW:
 		{
-			/*CDynBuffer buf;
-			CPDF_LZWFilter filter;
-			filter.Encode( pData, dwDataSize, buf );
-			if ( buf.GetSize() > 0 )
-			{
-				m_pDataBuf = GetAllocator()->NewArray<BYTE>( buf.GetSize() );
-				m_dwSize = buf.GetSize();
-				memcpy( m_pDataBuf, buf.GetData(), m_dwSize );
-				mDictPointer->SetName( "Filter", "LZWDecode" );
-			}*/
+            Buffer buffer;
+            PdfLZWFilter filter(GetAllocator());
+            filter.Encode(data, size, buffer);
+            if (buffer.GetSize() > 0)
+            {
+                data_ = GetAllocator()->NewArray<uint8_t>(buffer.GetSize());
+                size_ = buffer.GetSize();
+                memcpy(data_, buffer.GetData(), buffer.GetSize());
+                dictionary_->SetName( "Filter", "LZWDecode" );
+            }
 			break;
 		}
 	case STREAM_FILTER_RLE:
 		{
-			/*CDynBuffer buf;
-			CPDF_RLEFileter filter;
-			filter.Encode( pData, dwDataSize, buf );
-			if ( buf.GetSize() > 0 )
-			{
-				m_pDataBuf = GetAllocator()->NewArray<BYTE>( buf.GetSize() );
-				m_dwSize = buf.GetSize();
-				memcpy( m_pDataBuf, buf.GetData(), m_dwSize );
-				mDictPointer->SetName( "Filter", "RunLengthDecode" );
-			}*/
+            Buffer buffer;
+            PdfRLEFileter filter(GetAllocator());
+            filter.Encode(data, size, buffer);
+            if (buffer.GetSize() > 0)
+            {
+                data_ = GetAllocator()->NewArray<uint8_t>(buffer.GetSize());
+                size_ = buffer.GetSize();
+                memcpy(data_, buffer.GetData(), buffer.GetSize());
+                dictionary_->SetName( "Filter", "RunLengthDecode" );
+            }
 			break;
 		}
 	default:
@@ -1547,112 +1547,109 @@ bool PdfStreamAccess::Attach(const PdfStreamPointer & stream, PDF_STREAM_DECODE_
 			}
 		}
 
-		/*size_t bufSize = (size == 0) ? 1024 : size;
-		ByteString str(GetAllocator());
-		CDynBuffer buffer( bufSize * 2, bufSize, GetAllocator() );
-		size_t lSize = stmPointer->GetRawSize();
-		PBYTE pTmp = nullptr;
-		pTmp = GetAllocator()->NewArray<BYTE>( lSize );
-		stmPointer->GetRawData( 0, pTmp, lSize );
-		
-		for ( size_t i = 0; i < lFilterCount; i++ )
+		size_t buffer_size = (size == 0) ? 1024 : size;
+		ByteString filter_name(GetAllocator());
+		Buffer buffer(buffer_size * 2, buffer_size, GetAllocator());
+		size_t data_size = stream->GetRawSize();
+		uint8_t * tmp_data = GetAllocator()->NewArray<uint8_t>(data_size);
+		stream->GetRawData(0, tmp_data, data_size);
+		for (size_t index = 0; index < filter_count; ++index)
 		{
-			if ( mode == STREAM_DECODE_NOTLASTFILTER )
+			if (mode == STREAM_DECODE_NOTLASTFILTER)
 			{
-				if ( i + 1 == lFilterCount )
+				if (index + 1 == filter_count)
 				{
 					break;
 				}
 			}
 
-			str = pFilterNameArr[i]->GetNamePointer()->GetString();
-			if ( str == "ASCIIHexDecode" || str == "AHx" )
+			filter_name = filter_name_array[index]->GetPdfName()->GetString();
+			if (filter_name == "ASCIIHexDecode" || filter_name == "AHx")
 			{
-				CPDF_HexFilter filter( GetAllocator() );
-				filter.Decode( pTmp, lSize, buffer );
-			}else if ( str == "ASCII85Decode" || str == "A85" )
+				PdfHexFilter filter(GetAllocator());
+				filter.Decode(tmp_data, data_size, buffer);
+			}else if (filter_name == "ASCII85Decode" || filter_name == "A85")
 			{
-				CPDF_ASCII85Filter filter( GetAllocator() );
-				filter.Decode( pTmp, lSize, buffer );
-			}else if ( str == "LZWDecode" || str == "LZW" )
+                PdfASCII85Filter filter(GetAllocator());
+				filter.Decode(tmp_data, data_size, buffer);
+			}else if (filter_name == "LZWDecode" || filter_name == "LZW")
 			{
-				PdfDictionaryPointer pDecodeParams = pParamDictArr[i];
-				if ( ! pDecodeParams )
+				PdfDictionaryPointer decode_params = param_dictionary_array[index];
+				if (!decode_params)
 				{
-					CPDF_LZWFilter filter( GetAllocator() );
-					filter.Decode( pTmp, lSize, buffer );
+					PdfLZWFilter filter(GetAllocator());
+					filter.Decode(tmp_data, data_size, buffer);
 				}else{
-					CPDF_Predictor pPredictor( pDecodeParams, GetAllocator() );
-					CPDF_LZWFilter filter( GetAllocator() );
-					filter.Decode( pTmp, lSize, buffer );
-					lSize = buffer.GetSize();
-					GetAllocator()->DeleteArray<BYTE>( pTmp );
-					pTmp = GetAllocator()->NewArray<BYTE>( lSize );
-					buffer.Read( pTmp, lSize );
+					PdfFilterPredictor predictor(decode_params, GetAllocator());
+					PdfLZWFilter filter(GetAllocator());
+					filter.Decode(tmp_data, data_size, buffer);
+					data_size = buffer.GetSize();
+					GetAllocator()->DeleteArray<uint8_t>(tmp_data);
+					tmp_data = GetAllocator()->NewArray<uint8_t>(data_size);
+					buffer.Read(tmp_data, data_size);
 					buffer.Clear();
-					pPredictor.Decode( pTmp, lSize, buffer );
+					predictor.Decode(tmp_data, data_size, buffer);
 				}
-			}else if ( str == "FlateDecode" || str == "Fl" )
+			}else if (filter_name == "FlateDecode" || filter_name == "Fl")
 			{
-				PdfDictionaryPointer pDecodeParams = pParamDictArr[i];
-				if ( !pDecodeParams )
+				PdfDictionaryPointer decode_params = param_dictionary_array[index];
+				if (!decode_params)
 				{
-					CPDF_FlateFilter filter( GetAllocator() );
-					filter.Decode( pTmp, lSize, buffer );
+					PdfFlateFilter filter(GetAllocator());
+					filter.Decode(tmp_data, data_size, buffer);
 				}else{
-					CPDF_Predictor pPredictor( pDecodeParams, GetAllocator() );
-					CPDF_FlateFilter filter( GetAllocator() );
-					filter.Decode( pTmp, lSize, buffer );
-					lSize = buffer.GetSize();
-					GetAllocator()->DeleteArray<BYTE>( pTmp );
-					pTmp = GetAllocator()->NewArray<BYTE>( lSize );
-					buffer.Read( pTmp, lSize );
-					buffer.Clear();
-					pPredictor.Decode( pTmp, lSize, buffer );
+					PdfFilterPredictor predictor(decode_params, GetAllocator());
+					PdfFlateFilter filter(GetAllocator());
+                    filter.Decode(tmp_data, data_size, buffer);
+                    data_size = buffer.GetSize();
+                    GetAllocator()->DeleteArray<uint8_t>(tmp_data);
+                    tmp_data = GetAllocator()->NewArray<uint8_t>(data_size);
+                    buffer.Read(tmp_data, data_size);
+                    buffer.Clear();
+                    predictor.Decode(tmp_data, data_size, buffer);
 				}
-			}else if ( str == "RunLengthDecode" || str == "RL" )
+			}else if (filter_name == "RunLengthDecode" || filter_name == "RL")
 			{
-				CPDF_RLEFileter filter( GetAllocator() );
-				filter.Decode( pTmp, lSize, buffer );
-			}else if ( str == "CCITTFaxDecode" || str == "CCF" )
+				PdfRLEFileter filter(GetAllocator());
+				filter.Decode(tmp_data, data_size, buffer);
+			}else if (filter_name == "CCITTFaxDecode" || filter_name == "CCF")
 			{
-				PdfDictionaryPointer pDecodeParams = pParamDictArr[i];
-				CPDF_FaxDecodeParams params( pDecodeParams );
-				CPDF_FaxFilter filter( &params, GetAllocator() );
-				filter.Decode( pTmp, lSize, buffer );
-			}else if ( str == "JBIG2Decode" )
+				PdfDictionaryPointer decode_params = param_dictionary_array[index];
+				PdfFaxDecodeParams params(decode_params);
+				PdfFaxFilter filter(&params, GetAllocator());
+				filter.Decode(tmp_data, data_size, buffer);
+			}else if (filter_name == "JBIG2Decode")
 			{
-				CPDF_JBig2Filter filter( GetAllocator() );
-				filter.Decode( pTmp, lSize, buffer );
-			}else if ( str == "DCTDecode" || str == "DCT" )
+				PdfJBig2Filter filter(GetAllocator());
+				filter.Decode(tmp_data, data_size, buffer);
+			}else if (filter_name == "DCTDecode" || filter_name == "DCT")
 			{
-				CPDF_DCTDFilter filter( GetAllocator() );
-				filter.Decode( pTmp, lSize, buffer );
-			}else if ( str == "JPXDecode" )
+				PdfDCTDFilter filter(GetAllocator());
+				filter.Decode(tmp_data, data_size, buffer);
+			}else if (filter_name == "JPXDecode")
 			{
-                CPDF_JPXFilter fileter( GetAllocator() );
-                fileter.Decode( pTmp, lSize, buffer );
-			}else if ( str == "Crypt" )
+                PdfJPXFilter filter(GetAllocator());
+                filter.Decode(tmp_data, data_size, buffer);
+			}else if (filter_name == "Crypt")
 			{
-				retValue = false;
+				result = false;
 			}
-
-			if ( retValue == false )
+			if (result == false)
 			{
-				GetAllocator()->DeleteArray<BYTE>( pTmp );
-				GetAllocator()->DeleteArray<PdfNamePointer>( pFilterNameArr );
-				GetAllocator()->DeleteArray<PdfDictionaryPointer>( pParamDictArr );
+				GetAllocator()->DeleteArray<uint8_t>(tmp_data);
+				GetAllocator()->DeleteArray<PdfNamePointer>(filter_name_array);
+				GetAllocator()->DeleteArray<PdfDictionaryPointer>(param_dictionary_array);
 				return false;
 			}else{
-				lSize = buffer.GetSize();
-				GetAllocator()->DeleteArray<BYTE>( pTmp );
-				pTmp = GetAllocator()->NewArray<BYTE>( lSize );
-				buffer.Read( pTmp, lSize );
+				data_size = buffer.GetSize();
+				GetAllocator()->DeleteArray<uint8_t>(tmp_data);
+				tmp_data = GetAllocator()->NewArray<uint8_t>(data_size);
+				buffer.Read(tmp_data, data_size);
 			}
-		}
-        m_pDataBuf = pTmp;
-        m_dwSize = lSize;
-        */
+        }
+        data_ = tmp_data;
+        size_ = data_size;
+        
 		GetAllocator()->DeleteArray<PdfNamePointer>(filter_name_array);
 		GetAllocator()->DeleteArray<PdfDictionaryPointer>(param_dictionary_array);
         return result;
